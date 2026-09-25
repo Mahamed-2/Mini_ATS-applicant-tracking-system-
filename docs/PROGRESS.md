@@ -71,3 +71,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 03
 - **Message**: `chore: add allowlist gitignore and README`
+
+### Milestone Commit 04
+- **Message**: `feat(supabase): add initial migration with enums and tables`
