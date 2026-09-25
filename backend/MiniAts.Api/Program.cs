@@ -18,6 +18,13 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Ensure Railway dynamic PORT binding
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 // ── Configuration ─────────────────────────────────────────────────────────────
 
 // Read Supabase values needed for JWT validation and admin API calls.
@@ -71,10 +78,26 @@ var allowedOrigins = (builder.Configuration["Cors:AllowedOrigins"] ?? string.Emp
 builder.Services.AddCors(opts =>
 {
     // Named "Frontend" policy allows the Vercel app and local dev server.
-    opts.AddPolicy("Frontend", policy => policy
-        .WithOrigins(allowedOrigins)
+    opts.AddPolicy("Frontend", policy =>
+    {
+        policy.SetIsOriginAllowed(origin =>
+        {
+            if (string.IsNullOrEmpty(origin)) return false;
+            try
+            {
+                var uri = new Uri(origin);
+                if (uri.Host == "localhost" || uri.Host == "127.0.0.1") return true;
+                if (uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase)) return true;
+                return allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        })
         .AllowAnyMethod()
-        .AllowAnyHeader());
+        .AllowAnyHeader();
+    });
 });
 
 // ── Application services ─────────────────────────────────────────────────────
@@ -121,12 +144,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    // Swagger UI available at /swagger during local development.
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger UI available at /swagger
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // CORS must run before auth so preflight OPTIONS requests succeed.
 app.UseCors("Frontend");
@@ -145,5 +165,6 @@ app.MapControllers();
 
 // Health check for Railway deployment probe.
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapGet("/", () => Results.Ok(new { status = "ok", service = "Mini ATS API", swagger = "/swagger", health = "/health" }));
 
 app.Run();

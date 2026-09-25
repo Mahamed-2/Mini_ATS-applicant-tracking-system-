@@ -10,6 +10,7 @@
 !/supabase/
 !/scripts/
 !/railway.toml
+!/Dockerfile
 
 # Claude Code local settings stay private per developer.
 .claude/settings.local.json
