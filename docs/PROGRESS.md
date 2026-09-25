@@ -122,3 +122,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 20
 - **Message**: `feat(backend): add IJobService and JobService with authorization`
+
+### Milestone Commit 21
+- **Message**: `feat(backend): add ICandidateService with customer scoping`
