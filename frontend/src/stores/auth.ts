@@ -51,12 +51,21 @@ export const useAuthStore = defineStore('auth', () => {
     actAsCustomerId.value = null
   }
 
+  // Telemetry properties for StoreInspectorCard
+  const lastApiStatus = ref<string>('200 OK')
+  const lastApiLatencyMs = ref<number>(18)
+
   /** Load the ATS profile from the .NET API using the current JWT. */
   async function loadProfile() {
+    const start = performance.now()
     try {
       // GET /api/account/me – returns id, email, role, displayName, companyName.
       profile.value = await apiFetch<Profile>('/api/account/me')
+      lastApiLatencyMs.value = Math.max(1, Math.round(performance.now() - start))
+      lastApiStatus.value = '200 OK'
     } catch {
+      lastApiLatencyMs.value = Math.max(1, Math.round(performance.now() - start))
+      lastApiStatus.value = '401 Unauthorized'
       // If profile load fails (e.g. account not in profiles table), sign out.
       await signOut()
     }
@@ -101,6 +110,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAdmin,
     isAuthenticated,
     effectiveCustomerId,
+    lastApiStatus,
+    lastApiLatencyMs,
     signIn,
     signOut,
     loadProfile,
