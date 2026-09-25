@@ -15,20 +15,32 @@ export interface ApiError {
   message: string
 }
 
+// Fast in-memory token cache to avoid awaiting supabase.auth.getSession() on every request
+let activeToken: string | null = null
+
+/** Updates the active in-memory token from the auth store or session state. */
+export function setApiAuthToken(token: string | null) {
+  activeToken = token
+}
+
 /**
  * apiFetch wraps fetch with JWT authentication and JSON parsing.
  * Attaches the Supabase access token as a Bearer header on every request.
  * On 401, signs out locally and throws so the router guard redirects to login.
  */
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
-  // Get the current Supabase session to extract the access token.
-  const { data } = await supabase.auth.getSession()
+  // Use in-memory token first for 0ms latency; fall back to storage only if uninitialized
+  let token = activeToken
+  if (!token) {
+    const { data } = await supabase.auth.getSession()
+    token = data.session?.access_token ?? null
+    if (token) activeToken = token
+  }
 
   const headers = new Headers(init.headers)
   headers.set('Content-Type', 'application/json')
 
   // Attach the Supabase JWT if the user is authenticated.
-  const token = data.session?.access_token
   if (token) headers.set('Authorization', `Bearer ${token}`)
 
   const res = await fetch(`${baseUrl}${path}`, { ...init, headers })

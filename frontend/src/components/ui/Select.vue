@@ -3,6 +3,7 @@
  * Select.vue – Stylized Select with Lucide ChevronDown
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
+import { inject, computed, useId, type Ref } from 'vue';
 import { ChevronDown } from '@/lib/icons';
 
 interface Option {
@@ -17,9 +18,10 @@ interface Props {
   disabled?: boolean;
   error?: boolean;
   id?: string;
+  name?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   options: () => [],
   placeholder: '',
@@ -31,6 +33,20 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
+const fallbackId = useId();
+const injectedId = inject<Ref<string> | string | null>('fieldId', null);
+
+const resolvedId = computed(() => {
+  if (props.id) return props.id;
+  if (injectedId) return typeof injectedId === 'string' ? injectedId : injectedId.value;
+  return fallbackId;
+});
+
+const resolvedName = computed(() => {
+  if (props.name) return props.name;
+  return resolvedId.value;
+});
+
 function onChange(e: Event) {
   emit('update:modelValue', (e.target as HTMLSelectElement).value);
 }
@@ -39,7 +55,8 @@ function onChange(e: Event) {
 <template>
   <div class="relative flex items-center w-full">
     <select
-      :id="id"
+      :id="resolvedId"
+      :name="resolvedName"
       :value="modelValue ?? ''"
       :disabled="disabled"
       :class="[

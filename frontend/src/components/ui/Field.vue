@@ -3,29 +3,37 @@
  * Field.vue – Form Field Container linking label, input slot, hint, and error with ARIA
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
-import { useId } from 'vue';
+import { useId, provide, computed } from 'vue';
 import Label from './Label.vue';
 
 interface Props {
+  id?: string;
+  forId?: string;
   label?: string;
   hint?: string;
   error?: string;
   required?: boolean;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const autoId = useId();
-const errorId = `${autoId}-error`;
-const hintId = `${autoId}-hint`;
+const fieldId = computed(() => props.id || props.forId || autoId);
+const errorId = computed(() => `${fieldId.value}-error`);
+const hintId = computed(() => `${fieldId.value}-hint`);
+
+// Provide fieldId to any nested form controls (Input, Select, Textarea)
+provide('fieldId', fieldId);
+provide('fieldErrorId', errorId);
+provide('fieldHintId', hintId);
 </script>
 
 <template>
   <div class="w-full flex flex-col">
-    <Label v-if="label" :for-id="autoId" :required="required">
+    <Label v-if="label" :for-id="fieldId" :required="required">
       {{ label }}
     </Label>
     <div class="relative">
-      <slot :id="autoId" :aria-describedby="error ? errorId : hint ? hintId : undefined" :error="!!error" />
+      <slot :id="fieldId" :aria-describedby="error ? errorId : hint ? hintId : undefined" :error="!!error" />
     </div>
     <span
       v-if="error"

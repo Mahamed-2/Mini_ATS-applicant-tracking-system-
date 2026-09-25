@@ -12,6 +12,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/components/ui/useToast';
+import { useI18n } from '@/i18n';
 import { apiFetch } from '@/lib/api';
 import Button from '@/components/ui/Button.vue';
 import Input from '@/components/ui/Input.vue';
@@ -33,6 +34,7 @@ import {
 const authStore = useAuthStore();
 const router = useRouter();
 const toast = useToast();
+const { t } = useI18n();
 
 interface UserRow {
   id: string;
@@ -142,20 +144,22 @@ function openKanbanScoped(user: UserRow) {
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">System Administration</h1>
+          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">
+            {{ t('admin.title') }}
+          </h1>
           <span class="px-2 py-0.5 rounded text-label-sm font-semibold tracking-wide bg-ai-subtle text-ai-accent border border-ai-border flex items-center gap-1">
             <ShieldCheck class="w-3.5 h-3.5" />
-            Admin Scope
+            {{ t('admin.adminScope') }}
           </span>
         </div>
         <p class="text-body-sm text-text-muted mt-1">
-          Multi-tenant identity management and customer impersonation console
+          {{ t('admin.subtitle') }}
         </p>
       </div>
 
       <Button variant="primary" size="md" @click="isCreateDialogOpen = true">
         <template #iconLeft><Plus class="w-4 h-4" /></template>
-        Create Account
+        {{ t('admin.createUser') }}
       </Button>
     </div>
 
@@ -167,7 +171,7 @@ function openKanbanScoped(user: UserRow) {
       <div class="flex items-center gap-2.5 text-primary">
         <UserCheck class="w-5 h-5 shrink-0" />
         <div>
-          <span class="font-semibold">Active Impersonation Scope:</span>
+          <span class="font-semibold">{{ t('admin.activeImpersonation') }}</span>
           <span class="ml-1 text-text-primary font-medium">
             {{ users.find(u => u.id === authStore.actAsCustomerId)?.companyName || 'Nordic Tech AB' }}
           </span>
@@ -184,7 +188,7 @@ function openKanbanScoped(user: UserRow) {
           @click="router.push('/kanban')"
         >
           <template #iconLeft><SquareKanban class="w-3.5 h-3.5 text-primary" /></template>
-          View Kanban
+          {{ t('admin.viewKanban') }}
         </Button>
         <Button
           variant="ghost"
@@ -193,7 +197,7 @@ function openKanbanScoped(user: UserRow) {
           @click="clearActAs"
         >
           <template #iconLeft><X class="w-3.5 h-3.5" /></template>
-          Exit Scope
+          {{ t('admin.exitScope') }}
         </Button>
       </div>
     </div>
@@ -203,12 +207,12 @@ function openKanbanScoped(user: UserRow) {
       <div class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-4 shadow-sm flex items-center justify-between">
         <div>
           <span class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-            Total Identities
+            {{ t('admin.totalIdentities') }}
           </span>
           <div class="text-2xl font-bold text-text-primary tabular-nums mt-1">
             {{ totalUsersCount }}
           </div>
-          <p class="text-[11px] text-text-muted mt-0.5">Provisioned auth profiles</p>
+          <p class="text-[11px] text-text-muted mt-0.5">{{ t('admin.totalIdentitiesSub') }}</p>
         </div>
         <div class="w-10 h-10 rounded-md bg-surface-canvas border border-border-subtle flex items-center justify-center text-text-muted">
           <Users class="w-5 h-5" />
@@ -218,12 +222,12 @@ function openKanbanScoped(user: UserRow) {
       <div class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-4 shadow-sm flex items-center justify-between">
         <div>
           <span class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-            Customer Tenants
+            {{ t('admin.customerTenants') }}
           </span>
           <div class="text-2xl font-bold text-primary tabular-nums mt-1">
             {{ customerUsersCount }}
           </div>
-          <p class="text-[11px] text-text-muted mt-0.5">Scoped client workspaces</p>
+          <p class="text-[11px] text-text-muted mt-0.5">{{ t('admin.customerTenantsSub') }}</p>
         </div>
         <div class="w-10 h-10 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
           <Building2 class="w-5 h-5" />
@@ -233,12 +237,12 @@ function openKanbanScoped(user: UserRow) {
       <div class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-4 shadow-sm flex items-center justify-between">
         <div>
           <span class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-            Platform Admins
+            {{ t('admin.platformAdmins') }}
           </span>
           <div class="text-2xl font-bold text-ai-accent tabular-nums mt-1">
             {{ adminUsersCount }}
           </div>
-          <p class="text-[11px] text-text-muted mt-0.5">Superuser service operators</p>
+          <p class="text-[11px] text-text-muted mt-0.5">{{ t('admin.platformAdminsSub') }}</p>
         </div>
         <div class="w-10 h-10 rounded-md bg-ai-subtle border border-ai-border flex items-center justify-center text-ai-accent">
           <ShieldCheck class="w-5 h-5" />
@@ -250,10 +254,10 @@ function openKanbanScoped(user: UserRow) {
     <div class="surface-1 bg-surface-card border border-border-subtle rounded-lg shadow-sm overflow-hidden">
       <div class="p-4 border-b border-border-subtle flex items-center justify-between bg-surface-canvas">
         <h3 class="text-xs font-semibold text-text-primary uppercase tracking-wider">
-          Provisioned Platform Accounts
+          {{ t('admin.provisionedAccounts') }}
         </h3>
         <span class="text-[11px] text-text-muted font-mono">
-          Security Barrier: Strict RBAC Active
+          {{ t('admin.securityBarrier') }}
         </span>
       </div>
 
@@ -261,11 +265,11 @@ function openKanbanScoped(user: UserRow) {
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-border-subtle bg-surface-canvas/60 text-label-sm font-semibold text-text-muted select-none">
-              <th class="py-3 px-4">User</th>
-              <th class="py-3 px-3">Email Address</th>
-              <th class="py-3 px-3">Role Badge</th>
-              <th class="py-3 px-3">Organization / Company</th>
-              <th class="py-3 px-3 text-right">Tenant Scoping</th>
+              <th class="py-3 px-4">{{ t('admin.thUser') }}</th>
+              <th class="py-3 px-3">{{ t('admin.thEmail') }}</th>
+              <th class="py-3 px-3">{{ t('admin.thRole') }}</th>
+              <th class="py-3 px-3">{{ t('admin.thOrg') }}</th>
+              <th class="py-3 px-3 text-right">{{ t('admin.thTenant') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border-subtle text-body-sm">
@@ -299,14 +303,14 @@ function openKanbanScoped(user: UserRow) {
                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-ai-subtle text-ai-accent border border-ai-border"
                 >
                   <ShieldCheck class="w-3 h-3" />
-                  Admin
+                  {{ t('admin.roleAdmin') }}
                 </span>
                 <span
                   v-else
                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20"
                 >
                   <Building2 class="w-3 h-3" />
-                  Customer
+                  {{ t('admin.roleCustomer') }}
                 </span>
               </td>
 
@@ -324,14 +328,14 @@ function openKanbanScoped(user: UserRow) {
                   >
                     <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800">
                       <CheckCircle2 class="w-3 h-3" />
-                      Active Scope
+                      {{ t('admin.activeScopeBadge') }}
                     </span>
                     <Button
                       variant="ghost"
                       size="sm"
                       @click="clearActAs"
                     >
-                      Exit
+                      {{ t('common.exit') }}
                     </Button>
                   </div>
                   <div v-else class="inline-flex items-center gap-1.5">
@@ -341,7 +345,7 @@ function openKanbanScoped(user: UserRow) {
                       title="Impersonate this customer for scoped queries"
                       @click="handleActAs(user)"
                     >
-                      Act as
+                      {{ t('admin.actAsBtn') }}
                     </Button>
                     <Button
                       variant="ghost"
@@ -364,57 +368,72 @@ function openKanbanScoped(user: UserRow) {
     <!-- Create User Dialog -->
     <Dialog
       :open="isCreateDialogOpen"
-      title="Create Platform Account"
-      description="Register a new customer tenant or platform administrator. The server provisions Supabase Auth securely without exposing service keys."
+      :title="t('admin.modalTitle')"
+      :description="t('admin.modalDesc')"
       @update:open="isCreateDialogOpen = $event"
     >
       <form class="space-y-4" @submit.prevent="handleCreateUser">
-        <Field label="Email Address" required>
+        <Field id="admin-new-user-email" :label="t('admin.thEmail')" required>
           <Input
+            id="admin-new-user-email"
+            name="email"
             v-model="form.email"
             type="email"
             placeholder="recruiter@company.com"
+            autocomplete="email"
             required
           />
         </Field>
 
-        <Field label="Initial Password" required hint="Minimum 8 characters. Never logged or exposed.">
+        <Field id="admin-new-user-password" :label="t('admin.passwordLabel')" required :hint="t('admin.passwordHint')">
           <Input
+            id="admin-new-user-password"
+            name="password"
             v-model="form.password"
             type="password"
             placeholder="••••••••••••"
+            autocomplete="new-password"
             required
           />
         </Field>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Account Role">
+          <Field id="admin-new-user-role" :label="t('admin.roleLabel')">
             <Select
+              id="admin-new-user-role"
+              name="role"
               v-model="form.role"
               :options="[
-                { label: 'Customer (Tenant Scoped)', value: 'customer' },
-                { label: 'Platform Administrator', value: 'admin' }
+                { label: t('admin.roleCustomerOption'), value: 'customer' },
+                { label: t('admin.roleAdminOption'), value: 'admin' }
               ]"
             />
           </Field>
 
-          <Field label="Display Name">
+          <Field id="admin-new-user-name" :label="t('admin.displayNameLabel')">
             <Input
+              id="admin-new-user-name"
+              name="displayName"
               v-model="form.displayName"
               placeholder="e.g. Elin Recruiter"
+              autocomplete="name"
             />
           </Field>
         </div>
 
         <Field
           v-if="form.role === 'customer'"
-          label="Company / Workspace Name"
+          id="admin-new-user-company"
+          :label="t('admin.companyLabel')"
           required
-          hint="Required for customer accounts to define tenant scope."
+          :hint="t('admin.companyHint')"
         >
           <Input
+            id="admin-new-user-company"
+            name="companyName"
             v-model="form.companyName"
             placeholder="e.g. Nordic Tech AB"
+            autocomplete="organization"
             required
           />
         </Field>
@@ -426,7 +445,7 @@ function openKanbanScoped(user: UserRow) {
             size="md"
             @click="isCreateDialogOpen = false"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </Button>
           <Button
             type="submit"
@@ -434,7 +453,7 @@ function openKanbanScoped(user: UserRow) {
             size="md"
             :loading="createSubmitting"
           >
-            Create Account
+            {{ t('admin.createAccountBtn') }}
           </Button>
         </div>
       </form>

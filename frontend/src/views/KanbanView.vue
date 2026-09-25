@@ -24,21 +24,22 @@ import {
   Plus,
   X
 } from '@/lib/icons';
+import { useI18n } from '@/i18n';
 
 const router = useRouter();
 const route = useRoute();
 const atsStore = useAtsStore();
 const authStore = useAuthStore();
 const toast = useToast();
+const { t } = useI18n();
 
-const STAGES = [
-  { id: 'new', label: 'New', dotColor: '#0284c7' },
-  { id: 'screening', label: 'Screening', dotColor: '#d97706' },
-  { id: 'interview', label: 'Interview', dotColor: '#1d68f0' },
-  { id: 'offer', label: 'Offer', dotColor: '#7c3aed' },
-  { id: 'hired', label: 'Hired', dotColor: '#059669' },
-  { id: 'rejected', label: 'Rejected', dotColor: '#e11d48' },
-] as const;
+const STAGES = computed(() => [
+  { id: 'new', label: t('stage.applied'), dotColor: '#0284c7' },
+  { id: 'screening', label: t('stage.phoneScreen'), dotColor: '#d97706' },
+  { id: 'interview', label: t('stage.techInterview'), dotColor: '#1d68f0' },
+  { id: 'offer', label: t('stage.offer'), dotColor: '#7c3aed' },
+  { id: 'hired', label: t('stage.hired'), dotColor: '#059669' },
+]);
 
 // Toolbar filter state
 const selectedJobId = ref<string>((route.query.jobId as string) || 'all');
@@ -67,7 +68,7 @@ async function loadPipeline() {
 
 // Jobs options for filter
 const jobOptions = computed(() => [
-  { label: 'All Open Positions', value: 'all' },
+  { label: t('kanban.allJobs'), value: 'all' },
   ...atsStore.jobs.map(j => ({ label: j.title, value: j.id }))
 ]);
 
@@ -102,7 +103,7 @@ const filteredCandidates = computed(() => {
 
 // Grouped candidates by stage
 const stageColumns = computed(() => {
-  return STAGES.map(stage => {
+  return STAGES.value.map(stage => {
     const list = filteredCandidates.value.filter(c => c.stage.toLowerCase() === stage.id);
     return {
       ...stage,
@@ -184,27 +185,31 @@ function openAddCandidate() {
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">Pipeline Board</h1>
+          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">{{ t('kanban.title') }}</h1>
           <span class="px-2 py-0.5 rounded text-label-sm font-semibold tracking-wide bg-primary/10 text-primary border border-primary/20 tabular-nums">
-            {{ filteredCandidates.length }} Active
+            {{ t('kanban.activeCount', { count: filteredCandidates.length }) }}
           </span>
         </div>
         <p class="text-body-sm text-text-muted mt-0.5">
-          Recruitment lifecycle across 6 standardized ATS stages
+          {{ t('kanban.subtitle') }}
         </p>
       </div>
 
       <!-- Action & Filter controls -->
       <div class="flex flex-wrap items-center gap-2.5">
         <Select
+          id="kanban-job-filter"
+          name="kanbanJobFilter"
           v-model="selectedJobId"
           :options="jobOptions"
           class="w-52 text-xs"
         />
 
         <SearchInput
+          id="kanban-search-filter"
+          name="kanbanCandidateSearch"
           v-model="searchQuery"
-          placeholder="Filter by name... (⌘K)"
+          :placeholder="t('kanban.filterByName')"
           class="w-48 sm:w-56"
         />
 
@@ -212,21 +217,21 @@ function openAddCandidate() {
           v-if="selectedJobId !== 'all' || searchQuery"
           variant="ghost"
           size="sm"
-          title="Clear active filters"
+          :title="t('kanban.clearFilters')"
           @click="clearFilters"
         >
           <template #iconLeft><X class="w-3.5 h-3.5" /></template>
-          Clear
+          {{ t('kanban.clearFilters') }}
         </Button>
 
         <Button
           variant="secondary"
           size="sm"
-          title="Refresh board data"
+          :title="t('kanban.refresh')"
           @click="loadPipeline"
         >
           <template #iconLeft><RefreshCw class="w-3.5 h-3.5" /></template>
-          Refresh
+          {{ t('kanban.refresh') }}
         </Button>
 
         <Button
@@ -235,7 +240,7 @@ function openAddCandidate() {
           @click="openAddCandidate"
         >
           <template #iconLeft><Plus class="w-3.5 h-3.5" /></template>
-          Candidate
+          {{ t('kanban.addCandidate') }}
         </Button>
       </div>
     </div>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**
- * StageChip.vue – Pipeline Stage Status Pill with Exact Semantic Colors
+ * StageChip.vue – Pipeline Stage Status Pill with Exact Semantic Colors and Bilingual Translation
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
 import { computed } from 'vue';
+import { useI18n } from '@/i18n';
 
 type CandidateStage = 'new' | 'screening' | 'interview' | 'offer' | 'hired' | 'rejected' | string;
 
@@ -15,6 +16,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   size: 'md',
 });
+
+const { t } = useI18n();
 
 const normalizedStage = computed(() => props.stage.toLowerCase());
 
@@ -48,18 +51,29 @@ const dotColor = computed(() => {
     default: return 'bg-text-muted';
   }
 });
+
+const stageLabel = computed(() => {
+  switch (normalizedStage.value) {
+    case 'new': return t('stage.applied');
+    case 'screening': return t('stage.phoneScreen');
+    case 'interview': return t('stage.techInterview');
+    case 'offer': return t('stage.offer');
+    case 'hired': return t('stage.hired');
+    default: return props.stage;
+  }
+});
 </script>
 
 <template>
   <span
     :class="[
-      'stage-chip inline-flex items-center gap-1.5 rounded-full font-semibold border select-none capitalize transition-colors',
+      'stage-chip inline-flex items-center gap-1.5 rounded-full font-semibold border select-none transition-colors',
       stageClasses,
       size === 'sm' ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-0.5 text-[11px]',
     ]"
     :data-stage="normalizedStage"
   >
     <span :class="['w-1.5 h-1.5 rounded-full shrink-0', dotColor]" aria-hidden="true" />
-    <span>{{ stage }}</span>
+    <span>{{ stageLabel }}</span>
   </span>
 </template>

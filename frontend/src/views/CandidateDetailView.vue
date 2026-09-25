@@ -20,6 +20,7 @@ import Select from '@/components/ui/Select.vue';
 import AiAssessmentPanel from '@/components/AiAssessmentPanel.vue';
 import EmptyState from '@/components/ui/EmptyState.vue';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
+import { useI18n } from '@/i18n';
 import {
   ArrowLeft,
   Mail,
@@ -37,6 +38,7 @@ const router = useRouter();
 const atsStore = useAtsStore();
 const authStore = useAuthStore();
 const toast = useToast();
+const { t } = useI18n();
 
 const candidateId = computed(() => route.params.id as string);
 const isAssessing = ref(false);
@@ -46,14 +48,14 @@ const assessError = ref<string | null>(null);
 const isDeleteDialogOpen = ref(false);
 const isDeleting = ref(false);
 
-const STAGES = [
-  { label: 'New', value: 'new' },
-  { label: 'Screening', value: 'screening' },
-  { label: 'Interview', value: 'interview' },
-  { label: 'Offer', value: 'offer' },
-  { label: 'Hired', value: 'hired' },
-  { label: 'Rejected', value: 'rejected' },
-];
+const STAGES = computed(() => [
+  { label: t('stage.applied'), value: 'applied' },
+  { label: t('stage.phoneScreen'), value: 'phone_screen' },
+  { label: t('stage.techInterview'), value: 'interview' },
+  { label: t('stage.cultureFit'), value: 'culture_fit' },
+  { label: t('stage.offer'), value: 'offer' },
+  { label: t('stage.hired'), value: 'hired' },
+]);
 
 const effectiveCustomerId = computed(() => {
   return authStore.actAsCustomerId || authStore.profile?.id || '';
@@ -161,7 +163,7 @@ function formatDate(dateStr: string) {
           @click="router.back()"
         >
           <template #iconLeft><ArrowLeft class="w-4 h-4" /></template>
-          Back
+          {{ t('detail.back') }}
         </Button>
 
         <div class="h-4 w-px bg-border-subtle" />
@@ -185,7 +187,7 @@ function formatDate(dateStr: string) {
           @click="runAssessment"
         >
           <template #iconLeft><Sparkles class="w-3.5 h-3.5" /></template>
-          {{ candidate.aiFeedback ? 'Re-assess CV' : 'Assess CV with AI' }}
+          {{ candidate.aiFeedback ? t('detail.reassessAi') : t('detail.assessAi') }}
         </Button>
 
         <Button
@@ -212,16 +214,18 @@ function formatDate(dateStr: string) {
             </div>
             <div>
               <h3 class="text-sm font-bold text-text-primary">{{ candidate.fullName }}</h3>
-              <p class="text-xs text-text-muted">{{ job?.title || 'Applicant Record' }}</p>
+              <p class="text-xs text-text-muted">{{ job?.title || t('detail.generalPool') }}</p>
             </div>
           </div>
 
           <!-- Stage Controller -->
           <div class="space-y-1.5">
-            <label class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-              Pipeline Stage
+            <label for="detail-stage-select" class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+              {{ t('detail.pipelineStage') }}
             </label>
             <Select
+              id="detail-stage-select"
+              name="candidateStage"
               :model-value="candidate.stage"
               :options="STAGES"
               @update:model-value="handleStageChange($event)"
@@ -233,7 +237,7 @@ function formatDate(dateStr: string) {
             <div class="flex items-center justify-between py-1">
               <span class="text-text-muted flex items-center gap-1.5">
                 <Mail class="w-3.5 h-3.5" />
-                Email
+                {{ t('detail.email') }}
               </span>
               <a
                 v-if="candidate.email"
@@ -248,7 +252,7 @@ function formatDate(dateStr: string) {
             <div class="flex items-center justify-between py-1">
               <span class="text-text-muted flex items-center gap-1.5">
                 <Linkedin class="w-3.5 h-3.5" />
-                LinkedIn
+                {{ t('detail.linkedin') }}
               </span>
               <a
                 v-if="candidate.linkedinUrl"
@@ -257,26 +261,26 @@ function formatDate(dateStr: string) {
                 rel="noopener noreferrer"
                 class="text-[#0a66c2] hover:underline flex items-center gap-1 font-medium"
               >
-                <span>View Profile</span>
+                <span>{{ t('detail.viewProfile') }}</span>
                 <ExternalLink class="w-3 h-3" />
               </a>
-              <span v-else class="text-text-muted text-[11px]">Not provided</span>
+              <span v-else class="text-text-muted text-[11px]">{{ t('detail.notProvided') }}</span>
             </div>
 
             <div class="flex items-center justify-between py-1">
               <span class="text-text-muted flex items-center gap-1.5">
                 <Briefcase class="w-3.5 h-3.5" />
-                Applied Requisition
+                {{ t('detail.appliedRequisition') }}
               </span>
               <span class="text-text-primary font-medium text-right">
-                {{ job?.title || 'General Pool' }}
+                {{ job?.title || t('detail.generalPool') }}
               </span>
             </div>
 
             <div class="flex items-center justify-between py-1">
               <span class="text-text-muted flex items-center gap-1.5">
                 <Calendar class="w-3.5 h-3.5" />
-                Added
+                {{ t('detail.added') }}
               </span>
               <span class="text-text-primary font-medium tabular-nums">
                 {{ formatDate(candidate.createdAt) }}
@@ -287,7 +291,7 @@ function formatDate(dateStr: string) {
           <!-- Recruiter Summary -->
           <div v-if="candidate.summary" class="pt-2 border-t border-border-subtle space-y-1">
             <span class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-              Recruiter Summary
+              {{ t('detail.notesTitle') }}
             </span>
             <p class="text-xs text-text-primary leading-relaxed bg-surface-canvas p-2.5 rounded border border-border-subtle">
               {{ candidate.summary }}
@@ -299,9 +303,9 @@ function formatDate(dateStr: string) {
         <div v-if="job" class="surface-1 bg-surface-card border border-border-subtle rounded-lg shadow-sm p-4 space-y-2">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
-              Role Requirements
+              {{ t('detail.roleRequirements') }}
             </span>
-            <span class="text-[10px] text-emerald-600 font-medium">Active Position</span>
+            <span class="text-[10px] text-emerald-600 font-medium">{{ t('detail.activePosition') }}</span>
           </div>
           <h4 class="text-xs font-bold text-text-primary">{{ job.title }}</h4>
           <p class="text-xs text-text-muted leading-relaxed line-clamp-4">
@@ -326,11 +330,11 @@ function formatDate(dateStr: string) {
             <div class="flex items-center gap-2">
               <FileText class="w-4 h-4 text-primary" />
               <h3 class="text-xs font-semibold text-text-primary">
-                Resume / Profile Text Preview
+                {{ t('detail.resumePreview') }}
               </h3>
             </div>
             <span class="text-[11px] text-text-muted tabular-nums">
-              {{ candidate.cvText?.length || 0 }} characters
+              {{ t('detail.characters', { count: candidate.cvText?.length || 0 }) }}
             </span>
           </div>
 
@@ -341,7 +345,7 @@ function formatDate(dateStr: string) {
             {{ candidate.cvText }}
           </div>
           <div v-else class="text-xs text-text-muted py-6 text-center">
-            No resume text uploaded for this candidate.
+            {{ t('detail.noResume') }}
           </div>
         </div>
       </div>
@@ -350,9 +354,9 @@ function formatDate(dateStr: string) {
     <!-- Confirm Delete Dialog -->
     <ConfirmDialog
       :open="isDeleteDialogOpen"
-      title="Delete Candidate Record"
-      :message="`Are you sure you want to permanently delete '${candidate.fullName}'? This action cannot be undone.`"
-      confirm-text="Delete Candidate"
+      :title="t('detail.deleteTitle')"
+      :message="t('detail.deleteConfirm', { name: candidate.fullName })"
+      :confirm-text="t('detail.deleteBtn')"
       :loading="isDeleting"
       @confirm="handleDelete"
       @cancel="isDeleteDialogOpen = false"

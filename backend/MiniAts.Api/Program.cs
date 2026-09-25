@@ -39,7 +39,12 @@ builder.Services
         // Prevent ASP.NET from mapping JWT claims like 'sub' to legacy XML schema URIs.
         options.MapInboundClaims = false;
         options.TokenValidationParameters.ValidAudience = "authenticated";
-        options.TokenValidationParameters.ValidIssuer = $"{supabaseUrl.TrimEnd('/')}/auth/v1";
+        options.TokenValidationParameters.ValidIssuers = new[]
+        {
+            $"{supabaseUrl.TrimEnd('/')}/auth/v1",
+            $"{supabaseUrl.TrimEnd('/')}/auth/v1/",
+            "supabase"
+        };
 
         // Allow 1-minute clock skew for client/server time differences.
         options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);

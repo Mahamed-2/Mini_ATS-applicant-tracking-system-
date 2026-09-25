@@ -8,6 +8,7 @@ import { computed } from 'vue';
 import { useAtsStore } from '@/stores/ats';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/components/ui/useToast';
+import { useI18n } from '@/i18n';
 import AiGlowPanel from '@/components/ui/AiGlowPanel.vue';
 import AiScoreRing from '@/components/ui/AiScoreRing.vue';
 import Button from '@/components/ui/Button.vue';
@@ -30,6 +31,7 @@ import {
 const atsStore = useAtsStore();
 const authStore = useAuthStore();
 const toast = useToast();
+const { t } = useI18n();
 
 const report = computed(() => atsStore.pipelineReport);
 const isLoading = computed(() => atsStore.reportLoading);
@@ -168,13 +170,13 @@ const ratingBadgeClass = computed(() => {
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h2 class="text-headline-sm text-text-main font-semibold tracking-tight">AI Pipeline Intelligence</h2>
+            <h2 class="text-headline-sm text-text-main font-semibold tracking-tight">{{ t('ai.panelTitle') }}</h2>
             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium tracking-wide uppercase bg-ai-subtle text-ai-accent border border-ai-border">
-              Copilot Analysis
+              {{ t('ai.copilotAnalysis') }}
             </span>
           </div>
           <p class="text-body-sm text-text-muted mt-0.5">
-            Holistic funnel diagnostics, health rating, and recruiter action plan
+            {{ t('ai.panelSubtitle') }}
           </p>
         </div>
       </div>
@@ -189,7 +191,7 @@ const ratingBadgeClass = computed(() => {
             title="Copy Report as Markdown"
           >
             <template #iconLeft><Copy class="w-3.5 h-3.5" /></template>
-            Copy .md
+            {{ t('ai.copyMd') }}
           </Button>
 
           <Button
@@ -199,7 +201,7 @@ const ratingBadgeClass = computed(() => {
             title="Download Report as .md file"
           >
             <template #iconLeft><Download class="w-3.5 h-3.5" /></template>
-            Export .md
+            {{ t('ai.exportMd') }}
           </Button>
         </template>
 
@@ -213,7 +215,7 @@ const ratingBadgeClass = computed(() => {
           <template #iconLeft>
             <Sparkles class="w-4 h-4" />
           </template>
-          {{ report ? 'Regenerate Analysis' : 'Generate AI Report' }}
+          {{ report ? t('ai.regenerateBtn') : t('ai.generateBtn') }}
         </Button>
       </div>
     </div>
@@ -253,11 +255,10 @@ const ratingBadgeClass = computed(() => {
         </div>
         <div>
           <h3 class="text-headline-sm font-semibold text-text-main">
-            Generate Real-Time Pipeline Intelligence
+            {{ t('ai.emptyIntelligenceTitle') }}
           </h3>
           <p class="text-body-sm text-text-muted mt-1">
-            Synthesize applicant conversion metrics, AI score distribution, data coverage,
-            and discover stage bottlenecks with automated recruiter recommendations.
+            {{ t('ai.emptyIntelligenceDesc') }}
           </p>
         </div>
         <Button
@@ -267,7 +268,7 @@ const ratingBadgeClass = computed(() => {
           @click="handleGenerateReport"
         >
           <template #iconLeft><Sparkles class="w-4 h-4" /></template>
-          Generate AI Report
+          {{ t('ai.generateBtn') }}
         </Button>
       </div>
     </div>
@@ -283,7 +284,7 @@ const ratingBadgeClass = computed(() => {
               :score="report.score"
               :size="84"
               :stroke-width="7"
-              label="Health Index"
+              :label="t('ai.healthIndex')"
               color-scheme="rating"
               :rating="report.rating"
             />
@@ -422,7 +423,7 @@ const ratingBadgeClass = computed(() => {
           <div class="flex items-center gap-2 text-emerald-600">
             <CheckCircle2 class="w-4 h-4 shrink-0" />
             <h4 class="text-label-md font-semibold uppercase tracking-wider text-text-main">
-              Observed Strengths
+              {{ t('ai.demonstratedStrengths') }}
             </h4>
           </div>
           <ul class="space-y-2 text-body-sm text-text-muted">
@@ -438,7 +439,7 @@ const ratingBadgeClass = computed(() => {
           <div class="flex items-center gap-2 text-rose-600">
             <AlertTriangle class="w-4 h-4 shrink-0" />
             <h4 class="text-label-md font-semibold uppercase tracking-wider text-text-main">
-              Identified Bottlenecks
+              {{ t('ai.profileConcerns') }}
             </h4>
           </div>
           <ul class="space-y-2 text-body-sm text-text-muted">
@@ -454,7 +455,7 @@ const ratingBadgeClass = computed(() => {
           <div class="flex items-center gap-2 text-ai-accent">
             <Sparkles class="w-4 h-4 shrink-0" />
             <h4 class="text-label-md font-semibold uppercase tracking-wider text-text-main">
-              Recruiter Action Plan
+              {{ t('ai.actionPlanTitle') }}
             </h4>
           </div>
           <ul class="space-y-2 text-body-sm text-text-muted">

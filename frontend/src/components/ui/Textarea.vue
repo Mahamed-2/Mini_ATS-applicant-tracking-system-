@@ -3,6 +3,8 @@
  * Textarea.vue – Base Textarea with 4px border-radius
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
+import { inject, computed, useId, type Ref } from 'vue';
+
 interface Props {
   modelValue?: string | null;
   placeholder?: string;
@@ -10,9 +12,10 @@ interface Props {
   disabled?: boolean;
   error?: boolean;
   id?: string;
+  name?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   placeholder: '',
   rows: 3,
@@ -24,6 +27,20 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
+const fallbackId = useId();
+const injectedId = inject<Ref<string> | string | null>('fieldId', null);
+
+const resolvedId = computed(() => {
+  if (props.id) return props.id;
+  if (injectedId) return typeof injectedId === 'string' ? injectedId : injectedId.value;
+  return fallbackId;
+});
+
+const resolvedName = computed(() => {
+  if (props.name) return props.name;
+  return resolvedId.value;
+});
+
 function onInput(e: Event) {
   emit('update:modelValue', (e.target as HTMLTextAreaElement).value);
 }
@@ -31,7 +48,8 @@ function onInput(e: Event) {
 
 <template>
   <textarea
-    :id="id"
+    :id="resolvedId"
+    :name="resolvedName"
     :rows="rows"
     :value="modelValue ?? ''"
     :placeholder="placeholder"

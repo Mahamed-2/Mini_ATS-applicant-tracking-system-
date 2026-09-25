@@ -18,39 +18,41 @@ import {
 import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useAtsStore } from '@/stores/ats';
+import { useI18n } from '@/i18n';
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const uiStore = useUiStore();
 const atsStore = useAtsStore();
+const { t } = useI18n();
 
 const jobsCount = computed(() => atsStore.jobs.length);
 const candidatesCount = computed(() => atsStore.candidates.length);
 
 const recruitmentItems = computed(() => [
   {
-    name: 'Dashboard',
+    name: t('nav.dashboard'),
     path: '/',
     icon: LayoutDashboard,
     active: route.path === '/' || route.path === '/dashboard',
   },
   {
-    name: 'Jobs',
+    name: t('nav.jobs'),
     path: '/jobs',
     icon: Briefcase,
     badge: jobsCount.value > 0 ? jobsCount.value : undefined,
     active: route.path.startsWith('/jobs'),
   },
   {
-    name: 'Candidates',
+    name: t('nav.candidates'),
     path: '/candidates',
     icon: Users,
     badge: candidatesCount.value > 0 ? candidatesCount.value : undefined,
     active: route.path === '/candidates',
   },
   {
-    name: 'Kanban Board',
+    name: t('nav.kanban'),
     path: '/kanban',
     icon: SquareKanban,
     active: route.path === '/kanban',
@@ -59,7 +61,7 @@ const recruitmentItems = computed(() => [
 
 const adminItems = computed(() => [
   {
-    name: 'System Admin',
+    name: t('nav.admin'),
     path: '/admin',
     icon: ShieldCheck,
     isSpecial: true,
@@ -127,7 +129,7 @@ function navigate(path: string) {
             v-if="!uiStore.isSidebarCollapsed"
             class="text-[10px] font-bold text-text-muted uppercase tracking-wider px-2 block mb-1"
           >
-            RECRUITMENT
+            {{ t('nav.recruitment') }}
           </span>
           <nav class="flex flex-col gap-0.5">
             <button
@@ -166,7 +168,7 @@ function navigate(path: string) {
             v-if="!uiStore.isSidebarCollapsed"
             class="text-[10px] font-bold text-text-muted uppercase tracking-wider px-2 block mb-1"
           >
-            ADMINISTRATION
+            {{ t('nav.management') }}
           </span>
           <nav class="flex flex-col gap-0.5">
             <button

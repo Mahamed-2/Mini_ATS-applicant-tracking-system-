@@ -13,6 +13,7 @@ import { useRouter } from 'vue-router';
 import { useAtsStore, type Job } from '@/stores/ats';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/components/ui/useToast';
+import { useI18n } from '@/i18n';
 import SearchInput from '@/components/ui/SearchInput.vue';
 import Button from '@/components/ui/Button.vue';
 import IconButton from '@/components/ui/IconButton.vue';
@@ -37,6 +38,7 @@ const router = useRouter();
 const atsStore = useAtsStore();
 const authStore = useAuthStore();
 const toast = useToast();
+const { t } = useI18n();
 
 const searchQuery = ref('');
 const selectedJobId = ref<string | null>(null);
@@ -216,25 +218,29 @@ function formatDate(dateStr: string) {
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">Jobs Manager</h1>
+          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">
+            {{ t('jobs.title') }}
+          </h1>
           <span class="px-2 py-0.5 rounded text-label-sm font-semibold tracking-wide bg-primary/10 text-primary border border-primary/20">
-            {{ atsStore.jobs.length }} Openings
+            {{ t('jobs.openings', { count: atsStore.jobs.length }) }}
           </span>
         </div>
         <p class="text-body-sm text-text-muted mt-1">
-          Active technical requisitions for {{ authStore.profile?.companyName || 'Nordic Tech AB' }}
+          {{ t('jobs.subtitle', { company: authStore.profile?.companyName || 'Nordic Tech AB' }) }}
         </p>
       </div>
 
       <div class="flex items-center gap-3">
         <SearchInput
+          id="jobs-search-filter"
+          name="jobsSearch"
           v-model="searchQuery"
-          placeholder="Filter jobs... (⌘K)"
+          :placeholder="t('jobs.searchPlaceholder')"
           class="w-64"
         />
         <Button variant="primary" size="md" @click="openCreateDialog">
           <template #iconLeft><Plus class="w-4 h-4" /></template>
-          New job
+          {{ t('jobs.newJobBtn') }}
         </Button>
       </div>
     </div>
@@ -242,9 +248,9 @@ function formatDate(dateStr: string) {
     <!-- Empty state -->
     <div v-if="atsStore.jobs.length === 0" class="py-12">
       <EmptyState
-        title="No job requisitions created"
-        description="Publish your first technical role to start intake screening and Kanban pipeline tracking."
-        action-text="Create First Job"
+        :title="t('jobs.emptyTitle')"
+        :description="t('jobs.emptyDesc')"
+        :action-text="t('jobs.newJobBtn')"
         @action="openCreateDialog"
       >
         <template #icon><Briefcase class="w-8 h-8 text-primary" /></template>
@@ -259,11 +265,11 @@ function formatDate(dateStr: string) {
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-border-subtle bg-surface-canvas text-label-sm font-semibold text-text-muted select-none">
-                <th class="py-3 px-4">Role Title</th>
-                <th class="py-3 px-3">Status</th>
-                <th class="py-3 px-3 text-right">Candidates</th>
-                <th class="py-3 px-3 text-right">Updated</th>
-                <th class="py-3 px-3 text-right">Actions</th>
+                <th class="py-3 px-4">{{ t('jobs.thTitle') }}</th>
+                <th class="py-3 px-3">{{ t('jobs.thStatus') }}</th>
+                <th class="py-3 px-3 text-right">{{ t('jobs.thCandidates') }}</th>
+                <th class="py-3 px-3 text-right">{{ t('jobs.thUpdated') }}</th>
+                <th class="py-3 px-3 text-right">{{ t('jobs.thActions') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border-subtle text-body-sm">
@@ -292,7 +298,7 @@ function formatDate(dateStr: string) {
                 <!-- Status Pill -->
                 <td class="py-3 px-3">
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800">
-                    Active
+                    {{ t('jobs.statusActive') }}
                   </span>
                 </td>
 
@@ -348,14 +354,14 @@ function formatDate(dateStr: string) {
           <div class="flex items-start justify-between gap-3 pb-4 border-b border-border-subtle">
             <div>
               <span class="text-[11px] font-mono uppercase tracking-wider text-primary font-semibold">
-                Job Overview
+                {{ t('jobs.overview') }}
               </span>
               <h2 class="text-headline-sm font-bold text-text-primary mt-0.5">
                 {{ selectedJob.title }}
               </h2>
               <div class="flex items-center gap-2 text-[11px] text-text-muted mt-1">
                 <Calendar class="w-3 h-3" />
-                <span>Posted {{ formatDate(selectedJob.createdAt) }}</span>
+                <span>{{ t('jobs.posted', { date: formatDate(selectedJob.createdAt) }) }}</span>
               </div>
             </div>
 
@@ -365,17 +371,17 @@ function formatDate(dateStr: string) {
               @click="openKanbanFiltered(selectedJob.id)"
             >
               <template #iconLeft><SquareKanban class="w-3.5 h-3.5 text-primary" /></template>
-              Open Kanban
+              {{ t('jobs.openKanban') }}
             </Button>
           </div>
 
           <!-- Description -->
           <div class="space-y-1.5">
             <h4 class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-              Role Requirements & Context
+              {{ t('jobs.requirementsTitle') }}
             </h4>
             <p class="text-body-sm text-text-primary leading-relaxed bg-surface-canvas p-3 rounded border border-border-subtle">
-              {{ selectedJob.description || 'No detailed requirements provided for this position.' }}
+              {{ selectedJob.description || t('jobs.noRequirements') }}
             </p>
           </div>
 
@@ -383,9 +389,9 @@ function formatDate(dateStr: string) {
           <div class="space-y-2.5">
             <div class="flex items-center justify-between">
               <h4 class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-                Candidates in Pipeline ({{ selectedJobCandidates.length }})
+                {{ t('jobs.candidatesInPipeline', { count: selectedJobCandidates.length }) }}
               </h4>
-              <span class="text-[11px] text-text-muted tabular-nums">Active Workflow</span>
+              <span class="text-[11px] text-text-muted tabular-nums">{{ t('jobs.activeWorkflow') }}</span>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
@@ -405,10 +411,10 @@ function formatDate(dateStr: string) {
           <!-- Recent Candidates preview -->
           <div class="space-y-2 pt-2 border-t border-border-subtle">
             <h4 class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-              Attached Candidates
+              {{ t('jobs.attachedCandidates') }}
             </h4>
             <div v-if="selectedJobCandidates.length === 0" class="text-xs text-text-muted py-2">
-              No candidates attached to this job opening yet.
+              {{ t('jobs.noAttachedCandidates') }}
             </div>
             <div v-else class="space-y-1.5">
               <div
@@ -433,34 +439,40 @@ function formatDate(dateStr: string) {
     <!-- Create / Edit Job Dialog -->
     <Dialog
       :open="isFormDialogOpen"
-      :title="isEditing ? 'Edit Job Requisition' : 'Create New Job Opening'"
-      :description="isEditing ? 'Modify technical specifications and role status.' : 'Define technical competencies and publish opening into workspace.'"
+      :title="isEditing ? t('jobs.modalTitleEdit') : t('jobs.modalTitleNew')"
+      :description="t('jobs.modalDesc')"
       @update:open="isFormDialogOpen = $event"
     >
       <form class="space-y-4" @submit.prevent="handleSaveJob">
-        <Field label="Role Title" required>
+        <Field id="job-form-title" :label="t('jobs.roleTitle')" required>
           <Input
+            id="job-form-title"
+            name="jobTitle"
             v-model="formTitle"
             placeholder="e.g. Senior Frontend Engineer"
             required
           />
         </Field>
 
-        <Field label="Job Description & Required Stack" hint="Include key frameworks, libraries, and core responsibilities for AI match scoring.">
+        <Field id="job-form-description" :label="t('jobs.roleDesc')" :hint="t('jobs.roleDescHint')">
           <Textarea
+            id="job-form-description"
+            name="jobDescription"
             v-model="formDescription"
             :rows="5"
             placeholder="We are looking for a Senior Frontend Engineer proficient in Vue 3, TypeScript, and modern component architecture..."
           />
         </Field>
 
-        <Field label="Status">
+        <Field id="job-form-status" :label="t('common.status')">
           <Select
+            id="job-form-status"
+            name="jobStatus"
             v-model="formStatus"
             :options="[
-              { label: 'Active Opening', value: 'active' },
-              { label: 'Draft Requisition', value: 'draft' },
-              { label: 'Archived / Closed', value: 'closed' }
+              { label: t('jobs.statusActive'), value: 'active' },
+              { label: t('jobs.statusDraft'), value: 'draft' },
+              { label: t('jobs.statusClosed'), value: 'closed' }
             ]"
           />
         </Field>
@@ -472,7 +484,7 @@ function formatDate(dateStr: string) {
             size="md"
             @click="isFormDialogOpen = false"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </Button>
           <Button
             type="submit"
@@ -480,7 +492,7 @@ function formatDate(dateStr: string) {
             size="md"
             :loading="formSubmitting"
           >
-            {{ isEditing ? 'Save Changes' : 'Create Job Opening' }}
+            {{ isEditing ? t('jobs.saveChanges') : t('jobs.newJobBtn') }}
           </Button>
         </div>
       </form>
@@ -489,9 +501,9 @@ function formatDate(dateStr: string) {
     <!-- Confirm Delete Dialog -->
     <ConfirmDialog
       :open="isDeleteDialogOpen"
-      title="Delete Job Requisition"
-      :message="`Are you sure you want to delete '${jobToDelete?.title}'? Candidates attached to this requisition will be unassigned.`"
-      confirm-text="Delete Requisition"
+      :title="t('jobs.deleteTitle')"
+      :message="t('jobs.deleteConfirm', { title: jobToDelete?.title || '' })"
+      :confirm-text="t('jobs.deleteBtn')"
       :loading="deleteSubmitting"
       @confirm="handleDeleteJob"
       @cancel="isDeleteDialogOpen = false"

@@ -1,11 +1,24 @@
-# Mini ATS Prototype
+# Mini ATS – Recruiter Velocity ATS
 
-Prototype Applicant Tracking System built with:
+<p align="center">
+  <img src="https://img.shields.io/badge/Vue.js_3.4-%234FC08D.svg?style=for-the-badge&logo=vuedotjs&logoColor=white" alt="Vue 3" />
+  <img src="https://img.shields.io/badge/TypeScript_5.3-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite_5.4-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/.NET_10.0-%23512BD4.svg?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10" />
+  <img src="https://img.shields.io/badge/FastAPI-%23009688.svg?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Python_3.10+-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Supabase-%233ECF8E.svg?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/PostgreSQL-Multi--Tenant-%234169E1.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/i18n-English_%7C_Svenska-%231d68f0.svg?style=for-the-badge" alt="Localization" />
+  <img src="https://img.shields.io/badge/Theme-Light_%7C_Dark-%230f172a.svg?style=for-the-badge" alt="Dark Mode" />
+</p>
 
-- **Vue 3 + TypeScript + Vite** — frontend deployed on Vercel
-- **.NET 10 ASP.NET Core Web API** — backend deployed on Railway
-- **Python FastAPI** — AI CV assessment service deployed on Railway
-- **Supabase Postgres + Supabase Auth** — database and identity
+Executive-grade, high-density Applicant Tracking System built with:
+
+- **Vue 3.4 + TypeScript + Vite** — frontend styled with the Recruiter Velocity ATS design system
+- **.NET 10 ASP.NET Core Web API** — multi-tenant scoped backend with JWT authorization
+- **Python FastAPI** — AI pipeline analysis and candidate CV match scoring service
+- **Supabase PostgreSQL + Supabase Auth** — deterministic workspace isolation and identity
 
 ## Features
 
@@ -99,34 +112,6 @@ To seed this dataset:
 
 For the comprehensive dataset breakdown and test filter queries, consult [`docs/DEMO_SEED_DATA.md`](docs/DEMO_SEED_DATA.md).
 
-## Demo
-
-See [`docs/DEMO.md`](docs/DEMO.md) for the 5-minute recording script.
-
-Generate placeholder images:
-```bash
-python scripts/generate-demo-placeholders.py
-```
-
-## Documentation
-
-| File | Purpose |
-|---|---|
-| [`docs/QA.md`](docs/QA.md) | Architecture Q&A (why and how) |
-| [`docs/DEMO.md`](docs/DEMO.md) | 5-minute demo script |
-| [`docs/DEMO_SEED_DATA.md`](docs/DEMO_SEED_DATA.md) | Canonical 10-candidate demo dataset guide |
-| [`docs/ENVIRONMENT_VARIABLES.md`](docs/ENVIRONMENT_VARIABLES.md) | All env vars documented |
-| [`docs/COMMIT_PLAN.md`](docs/COMMIT_PLAN.md) | 60-commit plan |
-| [`docs/PROGRESS.md`](docs/PROGRESS.md) | Implementation progress log |
-| [`supabase/seed/create_demo_auth_users.md`](supabase/seed/create_demo_auth_users.md) | Auth user provisioning guide |
-
-## AI orchestrator skill
-
-For Claude Code or compatible AI agents:
-
-```text
-.claude/skills/ats-orchestrator/SKILL.md
-```
 
 ## Deploy
 
@@ -147,6 +132,6 @@ See [`docs/ENVIRONMENT_VARIABLES.md`](docs/ENVIRONMENT_VARIABLES.md) for all req
 ## Assumptions
 
 - Local ports: frontend 5173, backend 5000, AI 8001.
-- Demo admin email: `admin@demo-ats.local`.
 - Mock AI score formula: keyword overlap between job description and CV text.
 - Supabase free tier is sufficient for prototype.
+- Login as admin or as customer by just clicking the button on the login page and you will be logged in with the demo credentials

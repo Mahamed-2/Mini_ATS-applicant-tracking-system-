@@ -7,9 +7,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { supabase } from './lib/supabase'
 
-// Lazy-load views to keep the initial JS bundle small.
+// Eagerly import main landing view for zero-latency workspace transitions
+import DashboardView from './views/DashboardView.vue'
+
+// Lazy-load secondary views
 const LoginView           = () => import('./views/LoginView.vue')
-const DashboardView       = () => import('./views/DashboardView.vue')
 const JobsView            = () => import('./views/JobsView.vue')
 const CandidatesView      = () => import('./views/CandidatesView.vue')
 const CandidateDetailView = () => import('./views/CandidateDetailView.vue')
@@ -70,9 +72,20 @@ export const router = createRouter({
 
 // Global navigation guard: check session and role before each route.
 router.beforeEach(async (to) => {
-  // Check Supabase for an active session (handles page reload).
-  const { data } = await supabase.auth.getSession()
-  const authenticated = Boolean(data.session)
+  // Use lazy-import of auth store to avoid circular dependency with router.
+  const { useAuthStore } = await import('./stores/auth')
+  const authStore = useAuthStore()
+
+  // 1. Fast in-memory check (0ms)
+  let authenticated = authStore.isAuthenticated
+  if (!authenticated) {
+    // 2. Fall back to Supabase storage on cold load / direct page reload
+    const { data } = await supabase.auth.getSession()
+    authenticated = Boolean(data.session)
+    if (data.session && !authStore.session) {
+      authStore.session = data.session
+    }
+  }
 
   // Redirect unauthenticated users to login.
   if (to.meta.requiresAuth && !authenticated) {
@@ -86,9 +99,6 @@ router.beforeEach(async (to) => {
 
   // Admin-only route: check role claim from Supabase JWT.
   if (to.meta.requiresAdmin && authenticated) {
-    // Use lazy-import of auth store to avoid circular dependency with router.
-    const { useAuthStore } = await import('./stores/auth')
-    const authStore = useAuthStore()
     // Wait for profile if it hasn't loaded yet (on direct URL navigation).
     if (!authStore.profile) await authStore.loadProfile()
     if (!authStore.isAdmin) return { name: 'dashboard' }

@@ -115,11 +115,11 @@ const sampleTenants = [
       <div class="surface-1 p-4 rounded-lg flex flex-col gap-3">
         <h2 class="headline-sm">Form Inputs & Field Controls</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Field label="Candidate Name" hint="Full legal or preferred name">
-            <Input v-model="inputVal" />
+          <Field id="lab-candidate-name" label="Candidate Name" hint="Full legal or preferred name">
+            <Input id="lab-candidate-name" name="candidateName" v-model="inputVal" />
           </Field>
-          <Field label="Active Stage">
-            <Select v-model="selectVal" :options="[{ value: 'new', label: 'New' }, { value: 'screening', label: 'Screening' }]" />
+          <Field id="lab-active-stage" label="Active Stage">
+            <Select id="lab-active-stage" name="activeStage" v-model="selectVal" :options="[{ value: 'new', label: 'New' }, { value: 'screening', label: 'Screening' }]" />
           </Field>
           <div class="flex flex-col gap-2 pt-5">
             <div class="flex items-center gap-2">

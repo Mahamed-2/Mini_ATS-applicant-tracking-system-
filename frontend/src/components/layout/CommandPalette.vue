@@ -130,8 +130,11 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
         <div class="flex items-center px-3.5 py-2.5 border-b border-border-subtle bg-surface-card">
           <Search class="w-4 h-4 text-text-muted mr-2.5 shrink-0" />
           <input
+            id="global-command-palette-input"
+            name="command_palette_query"
             v-model="query"
-            type="text"
+            type="search"
+            aria-label="Type a command or search candidates and jobs"
             placeholder="Type a command or search candidates, jobs…"
             class="w-full bg-transparent text-xs text-text-primary placeholder:text-text-muted outline-none"
             autofocus

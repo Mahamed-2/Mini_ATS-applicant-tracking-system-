@@ -3,7 +3,7 @@
  * SearchInput.vue – 32px Omnibar Search Input with ⌘K Badge Slot
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
-import { ref } from 'vue';
+import { ref, computed, useId } from 'vue';
 import { Search, X } from '@/lib/icons';
 
 interface Props {
@@ -11,9 +11,11 @@ interface Props {
   placeholder?: string;
   shortcut?: string;
   disabled?: boolean;
+  id?: string;
+  name?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   placeholder: 'Search candidates, jobs… (⌘+K)',
   shortcut: '⌘K',
@@ -26,6 +28,9 @@ const emit = defineEmits<{
   (e: 'shortcut'): void;
 }>();
 
+const autoId = useId();
+const resolvedId = computed(() => props.id || autoId);
+const resolvedName = computed(() => props.name || 'search-query');
 const inputRef = ref<HTMLInputElement | null>(null);
 
 function onInput(e: Event) {
@@ -48,8 +53,11 @@ defineExpose({ focus });
   <div class="relative flex items-center w-full">
     <Search class="absolute left-2.5 w-3.5 h-3.5 text-text-muted pointer-events-none" />
     <input
+      :id="resolvedId"
       ref="inputRef"
-      type="text"
+      :name="resolvedName"
+      type="search"
+      aria-label="Search candidates and jobs"
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"

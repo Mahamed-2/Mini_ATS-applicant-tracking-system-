@@ -10,6 +10,7 @@
  */
 import { computed } from 'vue';
 import type { AiFeedback } from '@/stores/ats';
+import { useI18n } from '@/i18n';
 import AiGlowPanel from '@/components/ui/AiGlowPanel.vue';
 import AiScoreRing from '@/components/ui/AiScoreRing.vue';
 import ProviderChip from '@/components/ui/ProviderChip.vue';
@@ -42,6 +43,8 @@ const emit = defineEmits<{
   (e: 'assess'): void;
 }>();
 
+const { t } = useI18n();
+
 // Compute rating band based on score [0-39 risk, 40-69 watch, 70-100 healthy]
 const ratingBand = computed<'healthy' | 'watch' | 'risk'>(() => {
   if (!props.feedback) return 'watch';
@@ -54,11 +57,11 @@ const ratingBand = computed<'healthy' | 'watch' | 'risk'>(() => {
 const ratingLabel = computed(() => {
   switch (ratingBand.value) {
     case 'healthy':
-      return 'Strong Match';
+      return t('ai.strongMatch');
     case 'watch':
-      return 'Moderate Fit';
+      return t('ai.moderateFit');
     case 'risk':
-      return 'Low Alignment';
+      return t('ai.lowAlignment');
   }
 });
 
@@ -108,9 +111,9 @@ const ratingColorClass = computed(() => {
         <Sparkles class="w-6 h-6" />
       </div>
       <div class="max-w-xs mx-auto">
-        <h4 class="text-sm font-semibold text-text-primary">AI Evaluation Pending</h4>
+        <h4 class="text-sm font-semibold text-text-primary">{{ t('ai.pendingTitle') }}</h4>
         <p class="text-xs text-text-muted mt-1 leading-relaxed">
-          Analyze resume text against job requisition keywords, extract strengths, concerns, and interview prompts.
+          {{ t('ai.pendingDesc') }}
         </p>
       </div>
       <Button
@@ -120,7 +123,7 @@ const ratingColorClass = computed(() => {
         @click="emit('assess')"
       >
         <template #iconLeft><Sparkles class="w-4 h-4" /></template>
-        Assess CV with AI
+        {{ t('detail.assessAi') }}
       </Button>
     </div>
 
@@ -133,7 +136,7 @@ const ratingColorClass = computed(() => {
             :score="feedback.score"
             :size="76"
             :stroke-width="6"
-            label="AI Match"
+            :label="t('candidates.thMatch')"
             color-scheme="rating"
             :rating="ratingBand"
           />
@@ -151,7 +154,7 @@ const ratingColorClass = computed(() => {
               <ProviderChip :provider="feedback.provider" />
             </div>
             <p class="text-xs text-text-muted">
-              Evaluated against role requirements
+              {{ t('ai.evalAgainst') }}
             </p>
           </div>
         </div>
@@ -163,14 +166,14 @@ const ratingColorClass = computed(() => {
           @click="emit('assess')"
         >
           <template #iconLeft><Sparkles class="w-3.5 h-3.5" /></template>
-          Re-assess
+          {{ t('ai.reassessBtn') }}
         </Button>
       </div>
 
       <!-- Narrative Summary -->
       <div class="space-y-1">
         <h4 class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
-          Executive Match Summary
+          {{ t('ai.executiveMatchSummary') }}
         </h4>
         <p class="text-body-sm text-text-primary leading-relaxed bg-surface-canvas p-3 rounded border border-border-subtle">
           {{ feedback.summary }}
@@ -183,7 +186,7 @@ const ratingColorClass = computed(() => {
         <div class="p-3 rounded bg-surface-card border border-border-subtle space-y-2">
           <div class="flex items-center gap-1.5 text-emerald-600 font-semibold text-xs uppercase tracking-wide">
             <CheckCircle2 class="w-4 h-4 shrink-0" />
-            <span>Demonstrated Strengths</span>
+            <span>{{ t('ai.demonstratedStrengths') }}</span>
           </div>
           <ul class="space-y-1.5 text-xs text-text-muted">
             <li v-for="(s, idx) in feedback.strengths" :key="idx" class="flex items-start gap-1.5">
@@ -197,7 +200,7 @@ const ratingColorClass = computed(() => {
         <div class="p-3 rounded bg-surface-card border border-border-subtle space-y-2">
           <div class="flex items-center gap-1.5 text-amber-600 font-semibold text-xs uppercase tracking-wide">
             <AlertTriangle class="w-4 h-4 shrink-0" />
-            <span>Profile Concerns</span>
+            <span>{{ t('ai.profileConcerns') }}</span>
           </div>
           <ul class="space-y-1.5 text-xs text-text-muted">
             <li v-for="(c, idx) in feedback.concerns" :key="idx" class="flex items-start gap-1.5">
@@ -212,7 +215,7 @@ const ratingColorClass = computed(() => {
       <div v-if="feedback.questions?.length" class="p-3.5 rounded bg-surface-card border border-border-subtle space-y-2">
         <div class="flex items-center gap-1.5 text-ai-accent font-semibold text-xs uppercase tracking-wide">
           <HelpCircle class="w-4 h-4 shrink-0" />
-          <span>Recommended Interview Prompts</span>
+          <span>{{ t('ai.recommendedPrompts') }}</span>
         </div>
         <ol class="space-y-2 text-xs text-text-muted list-decimal list-inside leading-relaxed">
           <li v-for="(q, idx) in feedback.questions" :key="idx" class="pl-1">
@@ -224,7 +227,7 @@ const ratingColorClass = computed(() => {
       <!-- Screening Disclaimer -->
       <div class="flex items-center gap-2 pt-2 border-t border-border-subtle text-[11px] text-text-muted">
         <ShieldCheck class="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-        <span>Objective screening aid. Final hiring decisions remain with the recruiter.</span>
+        <span>{{ t('ai.disclaimer') }}</span>
       </div>
     </AiGlowPanel>
   </div>

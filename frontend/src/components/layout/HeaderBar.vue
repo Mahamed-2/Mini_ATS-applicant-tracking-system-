@@ -18,12 +18,15 @@ import {
 import SearchInput from '../ui/SearchInput.vue';
 import Avatar from '../ui/Avatar.vue';
 import Badge from '../ui/Badge.vue';
+import LanguageSwitcher from '../ui/LanguageSwitcher.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
+import { useI18n } from '@/i18n';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const uiStore = useUiStore();
+const { t } = useI18n();
 
 const isUserMenuOpen = ref(false);
 const searchQuery = ref('');
@@ -76,6 +79,8 @@ async function handleSignOut() {
       </button>
 
       <SearchInput
+        id="global-header-search"
+        name="globalSearch"
         v-model="searchQuery"
         placeholder="Search candidates, jobs… (⌘+K)"
         @submit="onSearchSubmit"
@@ -98,8 +103,11 @@ async function handleSignOut() {
       </button>
     </div>
 
-    <!-- Right Section: Theme Toggle + User Menu -->
+    <!-- Right Section: Language Switcher + Theme Toggle + User Menu -->
     <div class="flex items-center gap-2">
+      <!-- Language Switcher -->
+      <LanguageSwitcher />
+
       <!-- Theme Toggle Button -->
       <button
         type="button"
@@ -139,7 +147,7 @@ async function handleSignOut() {
             <div class="text-xs font-bold text-text-primary">{{ displayName }}</div>
             <div class="text-[11px] text-text-muted truncate">{{ email }}</div>
             <div class="mt-1 flex items-center gap-1.5">
-              <span class="text-[10px] uppercase font-semibold text-text-muted">Role:</span>
+              <span class="text-[10px] uppercase font-semibold text-text-muted">{{ t('common.role') }}:</span>
               <Badge :variant="role === 'admin' ? 'ai' : 'primary'">{{ role }}</Badge>
             </div>
           </div>
@@ -152,7 +160,7 @@ async function handleSignOut() {
               @click="isUserMenuOpen = false; router.push('/admin')"
             >
               <ShieldCheck class="w-3.5 h-3.5 text-primary" />
-              <span>Admin Center</span>
+              <span>{{ t('nav.admin') }}</span>
             </button>
 
             <button
@@ -161,7 +169,7 @@ async function handleSignOut() {
               @click="handleSignOut"
             >
               <LogOut class="w-3.5 h-3.5" />
-              <span>Sign out</span>
+              <span>{{ t('nav.signOut') }}</span>
             </button>
           </div>
         </div>

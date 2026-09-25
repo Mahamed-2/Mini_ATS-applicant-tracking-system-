@@ -3,6 +3,8 @@
  * Input.vue – Base Input with 4px border-radius and token styling
  * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
  */
+import { inject, computed, useId, type Ref } from 'vue';
+
 interface Props {
   modelValue?: string | number | null;
   type?: string;
@@ -14,7 +16,7 @@ interface Props {
   autocomplete?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   type: 'text',
   placeholder: '',
@@ -25,6 +27,23 @@ withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
+
+const fallbackId = useId();
+const injectedId = inject<Ref<string> | string | null>('fieldId', null);
+
+const resolvedId = computed(() => {
+  if (props.id) return props.id;
+  if (injectedId) return typeof injectedId === 'string' ? injectedId : injectedId.value;
+  return fallbackId;
+});
+
+const resolvedName = computed(() => {
+  if (props.name) return props.name;
+  if (props.autocomplete && props.autocomplete !== 'off' && props.autocomplete !== 'on') {
+    return props.autocomplete;
+  }
+  return resolvedId.value;
+});
 
 function onInput(e: Event) {
   emit('update:modelValue', (e.target as HTMLInputElement).value);
@@ -37,8 +56,8 @@ function onInput(e: Event) {
       <slot name="prefix" />
     </div>
     <input
-      :id="id"
-      :name="name"
+      :id="resolvedId"
+      :name="resolvedName"
       :type="type"
       :value="modelValue ?? ''"
       :placeholder="placeholder"

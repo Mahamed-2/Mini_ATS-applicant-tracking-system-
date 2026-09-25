@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router';
 import { useAtsStore } from '@/stores/ats';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/components/ui/useToast';
+import { useI18n } from '@/i18n';
 import SearchInput from '@/components/ui/SearchInput.vue';
 import Button from '@/components/ui/Button.vue';
 import Select from '@/components/ui/Select.vue';
@@ -35,6 +36,7 @@ const router = useRouter();
 const atsStore = useAtsStore();
 const authStore = useAuthStore();
 const toast = useToast();
+const { t } = useI18n();
 
 const searchQuery = ref('');
 const selectedJobFilter = ref('all');
@@ -46,7 +48,7 @@ const formFullName = ref('');
 const formEmail = ref('');
 const formLinkedinUrl = ref('');
 const formJobId = ref<string>('');
-const formStage = ref('new');
+const formStage = ref('applied');
 const formCvText = ref('');
 const formSummary = ref('');
 const formSubmitting = ref(false);
@@ -67,19 +69,19 @@ onMounted(async () => {
 
 // Filter options for dropdowns
 const jobOptions = computed(() => [
-  { label: 'All Open Roles', value: 'all' },
+  { label: t('candidates.allRoles'), value: 'all' },
   ...atsStore.jobs.map(j => ({ label: j.title, value: j.id }))
 ]);
 
-const stageOptions = [
-  { label: 'All Stages', value: 'all' },
-  { label: 'New', value: 'new' },
-  { label: 'Screening', value: 'screening' },
-  { label: 'Interview', value: 'interview' },
-  { label: 'Offer', value: 'offer' },
-  { label: 'Hired', value: 'hired' },
-  { label: 'Rejected', value: 'rejected' },
-];
+const stageOptions = computed(() => [
+  { label: t('candidates.allStages'), value: 'all' },
+  { label: t('stage.applied'), value: 'applied' },
+  { label: t('stage.phoneScreen'), value: 'phone_screen' },
+  { label: t('stage.techInterview'), value: 'interview' },
+  { label: t('stage.cultureFit'), value: 'culture_fit' },
+  { label: t('stage.offer'), value: 'offer' },
+  { label: t('stage.hired'), value: 'hired' },
+]);
 
 // Jobs lookup map
 const jobMap = computed(() => {
@@ -177,19 +179,21 @@ function formatDate(dateStr: string) {
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">Candidates</h1>
+          <h1 class="text-headline-lg font-bold text-text-primary tracking-tight">
+            {{ t('candidates.title') }}
+          </h1>
           <span class="px-2 py-0.5 rounded text-label-sm font-semibold tracking-wide bg-primary/10 text-primary border border-primary/20">
-            {{ atsStore.candidates.length }} Profiles
+            {{ t('candidates.profilesCount', { count: atsStore.candidates.length }) }}
           </span>
         </div>
         <p class="text-body-sm text-text-muted mt-1">
-          Active candidate roster and intake pipeline for {{ authStore.profile?.companyName || 'Nordic Tech AB' }}
+          {{ t('candidates.subtitle', { company: authStore.profile?.companyName || 'Nordic Tech AB' }) }}
         </p>
       </div>
 
       <Button variant="primary" size="md" @click="openCreateDialog">
         <template #iconLeft><Plus class="w-4 h-4" /></template>
-        Add candidate
+        {{ t('candidates.addBtn') }}
       </Button>
     </div>
 
@@ -197,19 +201,25 @@ function formatDate(dateStr: string) {
     <div class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-3 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
         <SearchInput
+          id="candidates-search-filter"
+          name="candidatesSearch"
           v-model="searchQuery"
-          placeholder="Filter by name, email, or role... (⌘K)"
+          :placeholder="t('candidates.searchPlaceholder')"
           class="w-full sm:w-72"
         />
 
         <div class="flex items-center gap-2">
           <Select
+            id="candidates-job-filter"
+            name="candidatesJobFilter"
             v-model="selectedJobFilter"
             :options="jobOptions"
             class="w-48 text-xs"
           />
 
           <Select
+            id="candidates-stage-filter"
+            name="candidatesStageFilter"
             v-model="selectedStageFilter"
             :options="stageOptions"
             class="w-36 text-xs"
@@ -218,16 +228,16 @@ function formatDate(dateStr: string) {
       </div>
 
       <div class="text-[11px] text-text-muted select-none tabular-nums self-end sm:self-center">
-        Showing {{ filteredCandidates.length }} of {{ atsStore.candidates.length }}
+        {{ t('candidates.showing', { count: filteredCandidates.length, total: atsStore.candidates.length }) }}
       </div>
     </div>
 
     <!-- Empty State -->
     <div v-if="filteredCandidates.length === 0" class="py-12">
       <EmptyState
-        title="No candidates match active filters"
-        description="Try clearing search filters or create a new candidate intake record."
-        action-text="Add Candidate"
+        :title="t('candidates.emptyTitle')"
+        :description="t('candidates.emptyDesc')"
+        :action-text="t('candidates.addBtn')"
         @action="openCreateDialog"
       >
         <template #icon><Users class="w-8 h-8 text-primary" /></template>
@@ -240,13 +250,13 @@ function formatDate(dateStr: string) {
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-border-subtle bg-surface-canvas text-label-sm font-semibold text-text-muted select-none">
-              <th class="py-3 px-4">Candidate</th>
-              <th class="py-3 px-3">Role Requisition</th>
-              <th class="py-3 px-3">Pipeline Stage</th>
-              <th class="py-3 px-3">AI Match</th>
-              <th class="py-3 px-3">LinkedIn</th>
-              <th class="py-3 px-3">Email Contact</th>
-              <th class="py-3 px-3 text-right">Added</th>
+              <th class="py-3 px-4">{{ t('candidates.thCandidate') }}</th>
+              <th class="py-3 px-3">{{ t('candidates.thRole') }}</th>
+              <th class="py-3 px-3">{{ t('candidates.thStage') }}</th>
+              <th class="py-3 px-3">{{ t('candidates.thMatch') }}</th>
+              <th class="py-3 px-3">{{ t('candidates.thLinkedIn') }}</th>
+              <th class="py-3 px-3">{{ t('candidates.thEmail') }}</th>
+              <th class="py-3 px-3 text-right">{{ t('candidates.thAdded') }}</th>
               <th class="py-3 px-3 w-8"></th>
             </tr>
           </thead>
@@ -302,7 +312,7 @@ function formatDate(dateStr: string) {
                   title="Open verified LinkedIn profile"
                 >
                   <Linkedin class="w-3.5 h-3.5 fill-[#0a66c2]" />
-                  <span>Profile</span>
+                  <span>{{ t('candidates.viewProfile') }}</span>
                 </a>
                 <span v-else class="text-xs text-text-muted">—</span>
               </td>
@@ -338,46 +348,59 @@ function formatDate(dateStr: string) {
     <!-- Candidate Intake Dialog -->
     <Dialog
       :open="isFormDialogOpen"
-      title="Add Candidate Intake"
-      description="Register applicant information, attached role opening, and resume content for AI screening."
+      :title="t('candidates.modalTitle')"
+      :description="t('candidates.modalDesc')"
       @update:open="isFormDialogOpen = $event"
     >
       <form class="space-y-4" @submit.prevent="handleCreateCandidate">
-        <Field label="Full Name" required>
+        <Field id="candidate-form-name" :label="t('candidates.fullName')" required>
           <Input
+            id="candidate-form-name"
+            name="fullName"
             v-model="formFullName"
             placeholder="e.g. Astrid Bergström"
+            autocomplete="name"
             required
           />
         </Field>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Email Address">
+          <Field id="candidate-form-email" :label="t('candidates.emailAddress')">
             <Input
+              id="candidate-form-email"
+              name="email"
               v-model="formEmail"
               type="email"
               placeholder="candidate@example.com"
+              autocomplete="email"
             />
           </Field>
 
-          <Field label="LinkedIn Profile URL">
+          <Field id="candidate-form-linkedin" :label="t('candidates.linkedinUrl')">
             <Input
+              id="candidate-form-linkedin"
+              name="linkedinUrl"
               v-model="formLinkedinUrl"
               placeholder="https://linkedin.com/in/..."
+              autocomplete="url"
             />
           </Field>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Target Role Opening">
+          <Field id="candidate-form-job" :label="t('candidates.targetRole')">
             <Select
+              id="candidate-form-job"
+              name="jobId"
               v-model="formJobId"
               :options="atsStore.jobs.map(j => ({ label: j.title, value: j.id }))"
             />
           </Field>
 
-          <Field label="Initial Pipeline Stage">
+          <Field id="candidate-form-stage" :label="t('candidates.initialStage')">
             <Select
+              id="candidate-form-stage"
+              name="stage"
               v-model="formStage"
               :options="stageOptions.filter(o => o.value !== 'all')"
             />
@@ -385,18 +408,23 @@ function formatDate(dateStr: string) {
         </div>
 
         <Field
-          label="CV / Resume Profile Text"
-          :hint="`Character count: ${formCvText.length} (detailed CV text improves AI matching accuracy)`"
+          id="candidate-form-cv"
+          :label="t('candidates.cvText')"
+          :hint="t('candidates.cvHint', { count: formCvText.length })"
         >
           <Textarea
+            id="candidate-form-cv"
+            name="cvText"
             v-model="formCvText"
             :rows="5"
             placeholder="Paste candidate resume, experience highlights, technical skills, and achievements here..."
           />
         </Field>
 
-        <Field label="Recruiter Notes & Summary">
+        <Field id="candidate-form-notes" :label="t('candidates.recruiterNotes')">
           <Input
+            id="candidate-form-notes"
+            name="recruiterNotes"
             v-model="formSummary"
             placeholder="Brief recruiter assessment notes or referral context..."
           />
@@ -409,7 +437,7 @@ function formatDate(dateStr: string) {
             size="md"
             @click="isFormDialogOpen = false"
           >
-            Cancel
+            {{ t('common.cancel') }}
           </Button>
           <Button
             type="submit"
@@ -417,7 +445,7 @@ function formatDate(dateStr: string) {
             size="md"
             :loading="formSubmitting"
           >
-            Add Candidate
+            {{ t('candidates.createBtn') }}
           </Button>
         </div>
       </form>
