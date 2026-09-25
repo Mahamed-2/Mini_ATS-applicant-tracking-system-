@@ -137,3 +137,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 25
 - **Message**: `feat(backend): add ISupabaseAdminClient and implementation`
+
+### Milestone Commit 26
+- **Message**: `feat(backend): add IAdminUserService for account creation`
