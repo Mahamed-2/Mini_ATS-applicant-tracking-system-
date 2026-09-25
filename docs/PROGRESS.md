@@ -98,3 +98,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 12
 - **Message**: `feat(backend): add health endpoint and Swagger`
+
+### Milestone Commit 13
+- **Message**: `feat(backend): add Profile and Job domain entities`
