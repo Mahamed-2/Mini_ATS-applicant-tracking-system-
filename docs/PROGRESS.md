@@ -185,3 +185,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 41
 - **Message**: `feat(frontend): add Pinia auth store with session and profile`
+
+### Milestone Commit 42
+- **Message**: `feat(frontend): add Pinia ATS store for jobs and candidates`
