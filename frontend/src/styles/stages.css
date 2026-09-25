@@ -1,0 +1,60 @@
+/* stages.css – Exact Six Pipeline Stage Utility Classes
+ * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
+ */
+
+/* ── Generic Stage Chip Base ──────────────────────────────────────────────── */
+.stage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+/* ── 1. New (Info) ────────────────────────────────────────────────────────── */
+.stage-new, [data-stage="new"] {
+  color: #0284c7 !important;
+  background-color: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+
+/* ── 2. Screening (Warning) ───────────────────────────────────────────────── */
+.stage-screening, [data-stage="screening"] {
+  color: #d97706 !important;
+  background-color: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+
+/* ── 3. Interview (Brand Cobalt) ──────────────────────────────────────────── */
+.stage-interview, [data-stage="interview"] {
+  color: #1d68f0 !important;
+  background-color: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+/* ── 4. Offer (Special Violet) ────────────────────────────────────────────── */
+.stage-offer, [data-stage="offer"] {
+  color: #7c3aed !important;
+  background-color: #f5f3ff !important;
+  border-color: #ddd6fe !important;
+}
+
+/* ── 5. Hired (Success Emerald) ───────────────────────────────────────────── */
+.stage-hired, [data-stage="hired"] {
+  color: #059669 !important;
+  background-color: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+/* ── 6. Rejected (Danger Rose) ────────────────────────────────────────────── */
+.stage-rejected, [data-stage="rejected"] {
+  color: #e11d48 !important;
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}

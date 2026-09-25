@@ -1,0 +1,86 @@
+/* tokens.css – Recruiter Velocity ATS Design Tokens
+ * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
+ * Consumed by: typography.css, elevation.css, stages.css, tailwind.config.ts, App.vue
+ */
+
+:root {
+  /* ── Core Brand & Functional (Light Theme Default) ─────────────────────── */
+  --primary:          #1d68f0; /* Cobalt: primary actions, selected, focus ring */
+  --primary-hover:    #1554c7;
+  --primary-subtle:   #eff6ff;
+
+  --ai-accent:        #7c3aed; /* Violet: STRICTLY RESERVED FOR AI */
+  --ai-accent-hover:  #6d28d9;
+  --ai-subtle:        #f5f3ff;
+  --ai-border:        #ddd6fe;
+
+  --success:          #059669; /* Emerald: Hired, verified, healthy */
+  --success-hover:    #047857;
+  --success-subtle:   #ecfdf5;
+  --success-border:   #a7f3d0;
+
+  --warning:          #d97706; /* Amber: Screening, watch */
+  --warning-hover:    #b45309;
+  --warning-subtle:   #fffbeb;
+  --warning-border:   #fde68a;
+
+  --danger:           #e11d48; /* Rose: Rejected, danger */
+  --danger-hover:     #be123c;
+  --danger-subtle:    #fff1f2;
+  --danger-border:    #fecdd3;
+
+  --info:             #0284c7; /* Sky: New candidate */
+  --info-hover:       #0369a1;
+  --info-subtle:      #f0f9ff;
+  --info-border:      #bae6fd;
+
+  /* ── Neutral & Surface Hierarchy ────────────────────────────────────────── */
+  --canvas:           #f8f9ff; /* Surface 0: main canvas background */
+  --surface-card:     #ffffff; /* Surface 1: card, sidebar, topbar */
+  --surface-modal:    #ffffff; /* Surface 2: dialogs, popovers */
+  --surface-hover:    #f1f5f9;
+
+  --border-subtle:    #e2e8f0; /* Slate 200: dividers and card borders */
+  --border-strong:    #cbd5e1; /* Slate 300: inputs, column separators */
+
+  --text-primary:     #0f172a; /* Slate 900: main text */
+  --text-muted:       #64748b; /* Slate 500: timestamps, sublabels */
+  --text-variant:     #475569; /* Slate 600: table headers, input labels */
+
+  /* ── Radii Hierarchy ────────────────────────────────────────────────────── */
+  --radius-xs:        2px;
+  --radius-sm:        4px;     /* inputs, badges, small buttons */
+  --radius-md:        6px;
+  --radius-lg:        8px;     /* cards, modals, panels */
+  --radius-full:      9999px;  /* stage chips, match pills */
+
+  /* ── Focus Indicator ────────────────────────────────────────────────────── */
+  --focus-ring:       0 0 0 2px #1d68f0;
+}
+
+/* ── Dark Theme (Derived strictly from palette) ───────────────────────────── */
+.dark, [data-theme="dark"] {
+  --canvas:           #0b0f19;
+  --surface-card:     #131b2e;
+  --surface-modal:    #1e293b;
+  --surface-hover:    #1e293b;
+
+  --border-subtle:    #1e293b;
+  --border-strong:    #334155;
+
+  --text-primary:     #f8fafc;
+  --text-muted:       #94a3b8;
+  --text-variant:     #cbd5e1;
+
+  --primary-subtle:   rgba(29, 104, 240, 0.15);
+  --ai-subtle:        rgba(124, 58, 237, 0.15);
+  --ai-border:        rgba(124, 58, 237, 0.35);
+  --success-subtle:   rgba(5, 150, 105, 0.15);
+  --success-border:   rgba(5, 150, 105, 0.35);
+  --warning-subtle:   rgba(217, 119, 6, 0.15);
+  --warning-border:   rgba(217, 119, 6, 0.35);
+  --danger-subtle:    rgba(225, 29, 72, 0.15);
+  --danger-border:    rgba(225, 29, 72, 0.35);
+  --info-subtle:      rgba(2, 132, 199, 0.15);
+  --info-border:      rgba(2, 132, 199, 0.35);
+}

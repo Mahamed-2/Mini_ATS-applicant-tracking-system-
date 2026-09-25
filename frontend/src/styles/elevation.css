@@ -1,0 +1,65 @@
+/* elevation.css – Surface Layers, Shadows, Drag States & AI Glow
+ * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md
+ */
+
+/* ── Surface 0: Canvas Background ─────────────────────────────────────────── */
+.surface-0, .canvas-bg {
+  background-color: var(--canvas);
+}
+
+/* ── Surface 1: Cards & Panels ────────────────────────────────────────────── */
+.surface-1, .card-surface {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+}
+
+/* ── Surface 2: Floating Modals, Dropdowns & Drawers ──────────────────────── */
+.surface-2, .modal-surface {
+  background-color: var(--surface-modal);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+}
+
+/* ── Kanban Dragged State ─────────────────────────────────────────────────── */
+.kanban-drag, .card-dragging {
+  box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.16), 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+  transform: rotate(2deg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 100;
+  cursor: grabbing;
+}
+
+/* ── AI Ambient Glow & Inner Double Border ────────────────────────────────── */
+.ai-glow-panel, .ai-panel {
+  background: linear-gradient(180deg, var(--surface-card) 0%, var(--ai-subtle) 100%);
+  border: 1px solid var(--ai-border);
+  box-shadow: 0 0 12px -2px rgba(124, 58, 237, 0.25), inset 0 0 0 1px rgba(124, 58, 237, 0.12);
+  border-radius: var(--radius-lg);
+}
+
+.ai-match-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--ai-subtle);
+  color: var(--ai-accent);
+  border: 1px solid var(--ai-border);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Reduced Motion Accessibility Override ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .kanban-drag, .card-dragging {
+    transform: none !important;
+  }
+  .ai-glow-panel, .ai-panel {
+    animation: none !important;
+  }
+}
