@@ -103,3 +103,25 @@ OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
 PORT=8001
 ```
+
+---
+
+## Demo Seeding (`scripts/seed-demo.py`)
+
+Used by the automated demo seeder to provision the canonical 10-candidate dataset.
+**Never commit these values.**
+
+| Variable | Required | Purpose | Example |
+|---|---|---|---|
+| `SUPABASE_URL` | Yes | Target Supabase project API URL | `https://abcdef.supabase.co` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Server-side key for Auth Admin and PostgREST | `eyJhbGci...` |
+| `DEMO_USER_PASSWORD` | No | Local-only password for the two demo auth accounts (defaults to safe pattern) | `replace-with-local-demo-password` |
+
+Usage:
+```bash
+export SUPABASE_URL="https://your-project.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+export DEMO_USER_PASSWORD="replace-with-local-demo-password"
+python scripts/seed-demo.py
+```
+
