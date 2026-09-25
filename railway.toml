@@ -1,0 +1,21 @@
+# railway.toml – Railway deployment configuration for the .NET 10 API.
+# Related: backend/MiniAts.Api/MiniAts.Api.csproj (project being built)
+#          backend/MiniAts.Api/Program.cs (ASPNETCORE_URLS env var consumed here)
+#          .claude/skills/ats-orchestrator/reference/DEPLOYMENT.md
+#          docs/ENVIRONMENT_VARIABLES.md
+
+[build]
+# Nixpacks builds the .NET 10 project; output goes to ./out directory.
+builder = "NIXPACKS"
+buildCommand = "dotnet publish backend/MiniAts.Api/MiniAts.Api.csproj -c Release -o out"
+
+[deploy]
+# Start the published binary; Railway injects PORT env var.
+startCommand = "out/MiniAts.Api"
+
+# Railway probes /health to verify the service is alive.
+healthcheckPath = "/health"
+
+# Restart the service if it crashes; Railway handles up to 10 retries.
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
