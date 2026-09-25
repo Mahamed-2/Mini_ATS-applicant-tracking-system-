@@ -110,3 +110,91 @@ public record AiAssessmentResult(
     List<string> Questions,
     string Provider          // "mock" or "llm"
 );
+
+// ── AI Pipeline Report ────────────────────────────────────────────────────────
+
+public record PipelineReportRequest(Guid? CustomerId);
+
+public record FunnelStageMetrics(
+    string Stage,
+    int Count,
+    double ConversionPct
+);
+
+public record ScoreDistributionBucket(
+    string Bucket,
+    int Count,
+    double Percentage
+);
+
+public record JobMetricItem(
+    Guid Id,
+    string Title,
+    int CandidateCount,
+    double AvgAiScore
+);
+
+public record CandidateRankItem(
+    Guid Id,
+    string Name,
+    string JobTitle,
+    string Stage,
+    int Score
+);
+
+public record StaleCandidateItem(
+    Guid Id,
+    string Name,
+    string Stage,
+    int DaysInStage
+);
+
+public record DataQualityCoverage(
+    double LinkedinPct,
+    double CvTextPct,
+    double ShortCvPct,
+    double MissingEmailPct
+);
+
+public record StageInsightDto(
+    string Stage,
+    string Insight
+);
+
+public record PipelineAnalyzeResponse(
+    string Headline,
+    int Score,
+    string Rating,
+    string Summary,
+    List<string> Strengths,
+    List<string> Risks,
+    List<string> Recommendations,
+    List<StageInsightDto> StageInsights,
+    string Provider
+);
+
+public record PipelineReportDto(
+    string Headline,
+    int Score,
+    string Rating,
+    string Summary,
+    List<string> Strengths,
+    List<string> Risks,
+    List<string> Recommendations,
+    List<StageInsightDto> StageInsights,
+    string Provider,
+    int TotalCandidates,
+    int TotalJobs,
+    double OverallHireRate,
+    double AvgAiScore,
+    List<FunnelStageMetrics> Funnel,
+    List<ScoreDistributionBucket> ScoreDistribution,
+    DataQualityCoverage Coverage,
+    List<JobMetricItem> Jobs,
+    List<StaleCandidateItem> StaleCandidates,
+    List<string> Outliers,
+    List<CandidateRankItem> TopCandidates,
+    List<CandidateRankItem> BottomCandidates,
+    DateTime GeneratedAt
+);
+

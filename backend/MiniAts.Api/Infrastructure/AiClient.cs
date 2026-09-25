@@ -15,8 +15,9 @@ namespace MiniAts.Infrastructure;
 public class AiClient : IAiClient
 {
     private readonly HttpClient _http;
-    private readonly string _assessUrl;  // {AiService:BaseUrl}/assess
-    private readonly string? _apiKey;   // X-AI-Service-Key header value
+    private readonly string _assessUrl;   // {AiService:BaseUrl}/assess
+    private readonly string _analyzeUrl;  // {AiService:BaseUrl}/analyze
+    private readonly string? _apiKey;    // X-AI-Service-Key header value
 
     public AiClient(HttpClient http, IConfiguration config)
     {
@@ -25,6 +26,7 @@ public class AiClient : IAiClient
         var baseUrl = config["AiService:BaseUrl"]
             ?? throw new InvalidOperationException("AiService:BaseUrl is required.");
         _assessUrl = $"{baseUrl.TrimEnd('/')}/assess";
+        _analyzeUrl = $"{baseUrl.TrimEnd('/')}/analyze";
 
         // Service key is optional; Python service only checks it if AI_SERVICE_API_KEY is set.
         _apiKey = config["AiService:ApiKey"];
@@ -75,5 +77,33 @@ public class AiClient : IAiClient
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         return JsonSerializer.Deserialize<AiAssessmentResult>(body, options)
             ?? throw new InvalidOperationException("AI service returned empty or invalid response.");
+    }
+
+    public async Task<PipelineAnalyzeResponse> AnalyzePipelineAsync(
+        object payload,
+        CancellationToken ct = default)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, _analyzeUrl);
+
+        if (!string.IsNullOrEmpty(_apiKey))
+            request.Headers.Add("X-AI-Service-Key", _apiKey);
+
+        request.Content = new StringContent(
+            JsonSerializer.Serialize(payload),
+            Encoding.UTF8,
+            "application/json");
+
+        var response = await _http.SendAsync(request, ct);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(ct);
+            throw new InvalidOperationException($"AI service pipeline analysis error: {response.StatusCode} – {error}");
+        }
+
+        var body = await response.Content.ReadAsStringAsync(ct);
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        return JsonSerializer.Deserialize<PipelineAnalyzeResponse>(body, options)
+            ?? throw new InvalidOperationException("AI service returned empty pipeline analysis response.");
     }
 }

@@ -92,6 +92,12 @@ public interface ICandidateService
     Task DeleteAsync(Guid id, Guid callerId, string callerRole, Guid customerId, CancellationToken ct = default);
 }
 
+/// <summary>Business logic for AI-driven pipeline report aggregation and narrative analysis.</summary>
+public interface IPipelineReportService
+{
+    Task<PipelineReportDto> GenerateReportAsync(Guid callerId, string callerRole, Guid customerId, CancellationToken ct = default);
+}
+
 /// <summary>Business logic for admin user creation via Supabase Auth Admin API.</summary>
 public interface IAdminUserService
 {
@@ -120,4 +126,10 @@ public interface IAiClient
         string linkedinUrl,
         string summary,
         CancellationToken ct = default);
+
+    // Call POST /analyze on the Python service for executive pipeline intelligence.
+    Task<PipelineAnalyzeResponse> AnalyzePipelineAsync(
+        object payload,
+        CancellationToken ct = default);
 }
+

@@ -80,9 +80,10 @@ builder.Services.AddScoped<IJobRepository,        JobRepository>();
 builder.Services.AddScoped<ICandidateRepository,  CandidateRepository>();
 
 // Services – application layer; contain business rules and authorization logic.
-builder.Services.AddScoped<IJobService,           JobService>();
-builder.Services.AddScoped<ICandidateService,     CandidateService>();
-builder.Services.AddScoped<IAdminUserService,     AdminUserService>();
+builder.Services.AddScoped<IJobService,            JobService>();
+builder.Services.AddScoped<ICandidateService,      CandidateService>();
+builder.Services.AddScoped<IAdminUserService,      AdminUserService>();
+builder.Services.AddScoped<IPipelineReportService,  PipelineReportService>();
 
 // External clients – infrastructure layer; call Supabase Auth Admin API and Python AI service.
 builder.Services.AddHttpClient<ISupabaseAdminClient, SupabaseAdminClient>();
