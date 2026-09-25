@@ -119,3 +119,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 19
 - **Message**: `feat(backend): add CurrentUserMiddleware to load caller profile`
+
+### Milestone Commit 20
+- **Message**: `feat(backend): add IJobService and JobService with authorization`
