@@ -89,3 +89,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 09
 - **Message**: `feat(backend): configure JWT bearer authentication`
+
+### Milestone Commit 10
+- **Message**: `feat(backend): add Npgsql data source registration`
