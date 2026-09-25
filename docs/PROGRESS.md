@@ -218,3 +218,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 52
 - **Message**: `feat(frontend): add AiAssessmentPanel component`
+
+### Milestone Commit 53
+- **Message**: `feat(frontend): add AdminView for user creation and act-as`
