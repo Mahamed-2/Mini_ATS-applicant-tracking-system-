@@ -155,3 +155,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 31
 - **Message**: `feat(ai): add assessment request and response Pydantic models`
+
+### Milestone Commit 32
+- **Message**: `feat(ai): add deterministic mock CV scorer`
