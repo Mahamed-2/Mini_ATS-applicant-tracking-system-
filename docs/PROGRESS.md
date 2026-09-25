@@ -143,3 +143,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 27
 - **Message**: `feat(backend): add AdminController create and list users`
+
+### Milestone Commit 28
+- **Message**: `feat(backend): add IAiClient HTTP client for Python service`
