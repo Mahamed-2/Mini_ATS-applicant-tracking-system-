@@ -191,3 +191,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 43
 - **Message**: `feat(frontend): add Vue Router with authentication guards`
+
+### Milestone Commit 44
+- **Message**: `feat(frontend): add AppShell layout component`
