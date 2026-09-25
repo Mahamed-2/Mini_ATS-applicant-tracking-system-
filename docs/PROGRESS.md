@@ -176,3 +176,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 38
 - **Message**: `feat(frontend): add environment type declarations`
+
+### Milestone Commit 39
+- **Message**: `feat(frontend): add Supabase client singleton`
