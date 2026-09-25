@@ -32,16 +32,14 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // Supabase signs tokens with this issuer; must match exactly.
-        options.TokenValidationParameters.ValidIssuer =
-            $"{supabaseUrl.TrimEnd('/')}/auth/v1";
+        // Supabase signs tokens with ES256 (JWKS) or HS256 (symmetric).
+        // Setting Authority automatically discovers keys via .well-known/openid-configuration and jwks.json.
+        options.Authority = $"{supabaseUrl.TrimEnd('/')}/auth/v1";
 
-        // Supabase authenticated user tokens carry audience "authenticated".
+        // Prevent ASP.NET from mapping JWT claims like 'sub' to legacy XML schema URIs.
+        options.MapInboundClaims = false;
         options.TokenValidationParameters.ValidAudience = "authenticated";
-
-        // Symmetric key derived from the Supabase project JWT secret.
-        options.TokenValidationParameters.IssuerSigningKey =
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(supabaseJwtSecret));
+        options.TokenValidationParameters.ValidIssuer = $"{supabaseUrl.TrimEnd('/')}/auth/v1";
 
         // Allow 1-minute clock skew for client/server time differences.
         options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);

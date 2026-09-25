@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "name": "Mini ATS deterministic demo dataset",
+    "version": "1.0.0",
+    "candidateCount": 10,
+    "jobCount": 2,
+    "userCount": 2,
+    "privacy": "All people, companies, emails, and URLs are fictional demo data."
+  },
+  "users": [
+    {
+      "id": "11111111-1111-4111-8111-111111111111",
+      "email": "admin@nordic-recruit.demo",
+      "role": "admin",
+      "displayName": "Seed Admin",
+      "companyName": "Nordic Recruit"
+    },
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "email": "recruiter@nordic-tech.demo",
+      "role": "customer",
+      "displayName": "Elin Recruiter",
+      "companyName": "Nordic Tech AB"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "33333333-3333-4333-8333-333333333301",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "title": "Senior Frontend Engineer",
+      "description": "Build accessible Vue 3 + TypeScript interfaces, collaborate with backend and design, optimize performance, and ship user-facing features.",
+      "status": "active",
+      "createdBy": "22222222-2222-4222-8222-222222222222",
+      "updatedBy": "22222222-2222-4222-8222-222222222222"
+    },
+    {
+      "id": "33333333-3333-4333-8333-333333333302",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "title": "Backend Engineer .NET",
+      "description": "Design REST APIs with .NET 10, JWT authentication, PostgreSQL and Supabase, clean OOP structure, and integration with the Python AI service.",
+      "status": "active",
+      "createdBy": "22222222-2222-4222-8222-222222222222",
+      "updatedBy": "22222222-2222-4222-8222-222222222222"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "55555555-5555-4555-8555-555555555501",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Anna Lund",
+      "email": "anna.lund@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-anna-lund",
+      "stage": "new",
+      "cvText": "Senior frontend engineer with 6 years of Vue 3, TypeScript, Vite, accessibility, design systems, and performance optimization experience.",
+      "summary": "Strong Vue and TypeScript profile for the frontend role.",
+      "aiScore": null,
+      "aiFeedback": null
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555502",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Erik Berg",
+      "email": "erik.berg@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-erik-berg",
+      "stage": "screening",
+      "cvText": "Frontend developer experienced in React and Vue, TypeScript, component libraries, testing, and responsive CSS.",
+      "summary": "Generalist frontend candidate currently in screening.",
+      "aiScore": null,
+      "aiFeedback": null
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555503",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Maria Karlsson",
+      "email": "maria.karlsson@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-maria-karlsson",
+      "stage": "interview",
+      "cvText": "Product-minded frontend engineer with Vue 3, TypeScript, Nuxt, design systems, accessibility audits, and performance budgets.",
+      "summary": "Advanced frontend candidate ready for interview.",
+      "aiScore": 86,
+      "aiFeedback": {
+        "summary": "Strong frontend match with demonstrated Vue 3, TypeScript, accessibility, and performance experience.",
+        "strengths": [
+          "Vue 3 and TypeScript depth",
+          "Accessibility and design systems",
+          "Performance-minded delivery"
+        ],
+        "concerns": [
+          "Needs more evidence of cross-team backend collaboration"
+        ],
+        "questions": [
+          "Describe a performance budget you enforced and the outcome.",
+          "How have you mentored junior frontend developers?"
+        ],
+        "provider": "mock"
+      }
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555504",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Jonas Nyström",
+      "email": "jonas.nystrom@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-jonas-nystrom",
+      "stage": "offer",
+      "cvText": "Senior Vue and TypeScript engineer who led migration from legacy JavaScript to Vue 3, with mentoring, testing, and CI experience.",
+      "summary": "Offer-stage candidate with leadership signals.",
+      "aiScore": null,
+      "aiFeedback": null
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555505",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Sofia Lindqvist",
+      "email": "sofia.lindqvist@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-sofia-lindqvist",
+      "stage": "hired",
+      "cvText": "Frontend specialist with Vue 3, TypeScript, Vite, WCAG, design tokens, and micro-frontend experience.",
+      "summary": "Hired frontend candidate.",
+      "aiScore": null,
+      "aiFeedback": null
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555506",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333302",
+      "fullName": "Oscar Dahl",
+      "email": "oscar.dahl@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-oscar-dahl",
+      "stage": "rejected",
+      "cvText": "Backend developer with Node.js and some C sharp, REST APIs, SQL, and limited .NET depth.",
+      "summary": "Rejected due to limited .NET alignment.",
+      "aiScore": 48,
+      "aiFeedback": {
+        "summary": "Backend-adjacent candidate but limited .NET alignment for this role.",
+        "strengths": [
+          "REST API experience",
+          "SQL fundamentals"
+        ],
+        "concerns": [
+          "Primary stack is Node.js rather than .NET or C sharp",
+          "Limited evidence of JWT and PostgreSQL depth"
+        ],
+        "questions": [
+          "Describe your most relevant .NET or C sharp project.",
+          "How would you secure a REST API with JWT?"
+        ],
+        "provider": "mock"
+      }
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555507",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Elsa Moreau",
+      "email": "elsa.moreau@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-elsa-moreau",
+      "stage": "new",
+      "cvText": "EU frontend engineer with Vue, TypeScript, CSS, internationalization, and accessible component design experience.",
+      "summary": "New candidate with strong CSS and accessibility background.",
+      "aiScore": null,
+      "aiFeedback": null
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555508",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333301",
+      "fullName": "Lucas Meyer",
+      "email": "lucas.meyer@example.com",
+      "linkedinUrl": null,
+      "stage": "screening",
+      "cvText": "Junior developer with some Vue tutorials, HTML, CSS, and JavaScript.",
+      "summary": "Early-stage candidate with limited proof.",
+      "aiScore": 42,
+      "aiFeedback": {
+        "summary": "Early-stage candidate with limited verified experience and missing LinkedIn profile.",
+        "strengths": [
+          "Basic HTML, CSS, and JavaScript exposure",
+          "Interest in frontend work"
+        ],
+        "concerns": [
+          "No LinkedIn URL provided",
+          "CV text is short",
+          "Limited evidence of Vue or TypeScript production use"
+        ],
+        "questions": [
+          "Share a small Vue or JavaScript project you built end to end.",
+          "What production experience do you have with TypeScript?"
+        ],
+        "provider": "mock"
+      }
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555509",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333302",
+      "fullName": "Nina Patel",
+      "email": "nina.patel@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-nina-patel",
+      "stage": "interview",
+      "cvText": "Backend engineer with .NET 8, C sharp, REST, JWT, PostgreSQL, Docker, and Supabase exposure.",
+      "summary": "Strong backend candidate for interview.",
+      "aiScore": 84,
+      "aiFeedback": {
+        "summary": "Strong backend candidate with relevant .NET, REST, JWT, PostgreSQL, and containerization experience.",
+        "strengths": [
+          ".NET and C sharp backend experience",
+          "REST and JWT understanding",
+          "PostgreSQL and Docker exposure"
+        ],
+        "concerns": [
+          "Could provide more examples of Supabase or AI-service integration"
+        ],
+        "questions": [
+          "Describe an API you designed with authentication and authorization.",
+          "How do you keep database migrations safe in production?"
+        ],
+        "provider": "mock"
+      }
+    },
+    {
+      "id": "55555555-5555-4555-8555-555555555510",
+      "customerId": "22222222-2222-4222-8222-222222222222",
+      "jobId": "33333333-3333-4333-8333-333333333302",
+      "fullName": "Hugo Silva",
+      "email": "hugo.silva@example.com",
+      "linkedinUrl": "https://www.linkedin.com/in/mini-ats-demo-hugo-silva",
+      "stage": "new",
+      "cvText": "Software engineer moving from Java to .NET, with solid SQL, APIs, and eagerness to learn C sharp, Supabase, and clean architecture.",
+      "summary": "Potential backend candidate needing deeper .NET proof.",
+      "aiScore": null,
+      "aiFeedback": null
+    }
+  ]
+}
