@@ -107,3 +107,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 15
 - **Message**: `feat(backend): add application DTOs and request/response models`
+
+### Milestone Commit 16
+- **Message**: `feat(backend): add IProfileRepository interface and implementation`
