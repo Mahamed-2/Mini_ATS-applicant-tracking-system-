@@ -197,3 +197,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 45
 - **Message**: `feat(frontend): add LoginView with Supabase password auth`
+
+### Milestone Commit 46
+- **Message**: `feat(frontend): add DashboardView with job list`
