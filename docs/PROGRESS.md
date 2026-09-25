@@ -83,3 +83,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 07
 - **Message**: `chore(backend): create MiniAts.Api .NET 10 project`
+
+### Milestone Commit 08
+- **Message**: `feat(backend): add appsettings and connection string config`
