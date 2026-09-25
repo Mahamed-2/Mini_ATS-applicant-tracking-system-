@@ -1,115 +1,231 @@
 <script setup lang="ts">
-// AiAssessmentPanel.vue – displays the structured AI assessment result.
-// Related: src/components/CandidateCard.vue (shows this panel when assessment is available)
-//          src/stores/ats.ts (AiFeedback type)
-//          backend/ai-service/main.py (AssessResponse model that produced this data)
-//          backend/MiniAts.Api/Api/Controllers/AiController.cs (stored the result)
+/**
+ * AiAssessmentPanel.vue – Candidate CV Assessment Scorecard Panel
+ * Source of Truth: docs/DESIGN.md & .claude/skills/ats-orchestrator/reference/PAGE_RESKIN.md
+ * Integrates:
+ * - POST /api/ai/candidates/{id}/assess?customerId=...
+ * - AiScoreRing with color bands [0-39 rose, 40-69 amber, 70-100 emerald]
+ * - AiGlowPanel container
+ * - Strengths (CheckCircle2), Concerns (AlertTriangle), Questions (HelpCircle)
+ */
+import { computed } from 'vue';
+import type { AiFeedback } from '@/stores/ats';
+import AiGlowPanel from '@/components/ui/AiGlowPanel.vue';
+import AiScoreRing from '@/components/ui/AiScoreRing.vue';
+import ProviderChip from '@/components/ui/ProviderChip.vue';
+import Button from '@/components/ui/Button.vue';
+import Skeleton from '@/components/ui/Skeleton.vue';
+import ErrorState from '@/components/ui/ErrorState.vue';
+import {
+  Sparkles,
+  CheckCircle2,
+  AlertTriangle,
+  HelpCircle,
+  ShieldCheck
+} from '@/lib/icons';
 
-import type { AiFeedback } from '../stores/ats'
+interface Props {
+  feedback?: AiFeedback | null;
+  loading?: boolean;
+  error?: string | null;
+  canAssess?: boolean;
+}
 
-defineProps<{
-  feedback: AiFeedback
-}>()
+const props = withDefaults(defineProps<Props>(), {
+  feedback: null,
+  loading: false,
+  error: null,
+  canAssess: true,
+});
+
+const emit = defineEmits<{
+  (e: 'assess'): void;
+}>();
+
+// Compute rating band based on score [0-39 risk, 40-69 watch, 70-100 healthy]
+const ratingBand = computed<'healthy' | 'watch' | 'risk'>(() => {
+  if (!props.feedback) return 'watch';
+  const s = props.feedback.score;
+  if (s >= 70) return 'healthy';
+  if (s >= 40) return 'watch';
+  return 'risk';
+});
+
+const ratingLabel = computed(() => {
+  switch (ratingBand.value) {
+    case 'healthy':
+      return 'Strong Match';
+    case 'watch':
+      return 'Moderate Fit';
+    case 'risk':
+      return 'Low Alignment';
+  }
+});
+
+const ratingColorClass = computed(() => {
+  switch (ratingBand.value) {
+    case 'healthy':
+      return 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-800';
+    case 'watch':
+      return 'text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800';
+    case 'risk':
+      return 'text-rose-700 bg-rose-50 border-rose-200 dark:text-rose-400 dark:bg-rose-950/40 dark:border-rose-800';
+  }
+});
 </script>
 
 <template>
-  <div class="ai-panel">
-    <!-- Score and provider -->
-    <div class="ai-header">
-      <div class="ai-score-large">
-        <span class="score-number">{{ feedback.score }}</span>
-        <span class="score-label">/100</span>
+  <div>
+    <!-- Loading State -->
+    <div v-if="loading" class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-5 space-y-4">
+      <div class="flex items-center gap-3">
+        <Skeleton height="72px" width="72px" class="rounded-full shrink-0" />
+        <div class="space-y-2 flex-1">
+          <Skeleton height="20px" width="40%" class="rounded" />
+          <Skeleton height="16px" width="70%" class="rounded" />
+        </div>
       </div>
-      <span class="provider-tag">{{ feedback.provider }}</span>
+      <Skeleton height="60px" class="rounded-md" />
+      <Skeleton height="100px" class="rounded-md" />
     </div>
 
-    <!-- Summary -->
-    <p class="ai-summary">{{ feedback.summary }}</p>
-
-    <!-- Strengths list -->
-    <div v-if="feedback.strengths.length" class="ai-section">
-      <div class="ai-section-title">✅ Strengths</div>
-      <ul class="ai-list">
-        <li v-for="(s, i) in feedback.strengths" :key="i">{{ s }}</li>
-      </ul>
+    <!-- Error State -->
+    <div v-else-if="error" class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-5">
+      <ErrorState
+        title="AI assessment failed"
+        :message="error"
+        retry-text="Retry Assessment"
+        @retry="emit('assess')"
+      />
     </div>
 
-    <!-- Concerns list -->
-    <div v-if="feedback.concerns.length" class="ai-section">
-      <div class="ai-section-title">⚠️ Concerns</div>
-      <ul class="ai-list">
-        <li v-for="(c, i) in feedback.concerns" :key="i">{{ c }}</li>
-      </ul>
+    <!-- Unassessed State (e.g. Anna Lund before live demo) -->
+    <div
+      v-else-if="!feedback"
+      class="surface-1 bg-surface-card border border-border-subtle rounded-lg p-6 text-center space-y-4 shadow-sm"
+    >
+      <div class="w-12 h-12 mx-auto rounded-full bg-ai-subtle border border-ai-border flex items-center justify-center text-ai-accent">
+        <Sparkles class="w-6 h-6" />
+      </div>
+      <div class="max-w-xs mx-auto">
+        <h4 class="text-sm font-semibold text-text-primary">AI Evaluation Pending</h4>
+        <p class="text-xs text-text-muted mt-1 leading-relaxed">
+          Analyze resume text against job requisition keywords, extract strengths, concerns, and interview prompts.
+        </p>
+      </div>
+      <Button
+        v-if="canAssess"
+        variant="ai"
+        size="md"
+        @click="emit('assess')"
+      >
+        <template #iconLeft><Sparkles class="w-4 h-4" /></template>
+        Assess CV with AI
+      </Button>
     </div>
 
-    <!-- Interview questions -->
-    <div v-if="feedback.questions.length" class="ai-section">
-      <div class="ai-section-title">💬 Interview Questions</div>
-      <ol class="ai-list">
-        <li v-for="(q, i) in feedback.questions" :key="i">{{ q }}</li>
-      </ol>
-    </div>
+    <!-- Complete Assessment Card (AiGlowPanel) -->
+    <AiGlowPanel v-else padding="lg" class="space-y-5">
+      <!-- Header Row: Score Ring + Summary Details -->
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-border-subtle">
+        <div class="flex items-center gap-4">
+          <AiScoreRing
+            :score="feedback.score"
+            :size="76"
+            :stroke-width="6"
+            label="AI Match"
+            color-scheme="rating"
+            :rating="ratingBand"
+          />
+
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span
+                :class="[
+                  'px-2 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider border',
+                  ratingColorClass
+                ]"
+              >
+                {{ ratingLabel }}
+              </span>
+              <ProviderChip :provider="feedback.provider" />
+            </div>
+            <p class="text-xs text-text-muted">
+              Evaluated against role requirements
+            </p>
+          </div>
+        </div>
+
+        <Button
+          variant="ai"
+          size="sm"
+          title="Re-run AI evaluation"
+          @click="emit('assess')"
+        >
+          <template #iconLeft><Sparkles class="w-3.5 h-3.5" /></template>
+          Re-assess
+        </Button>
+      </div>
+
+      <!-- Narrative Summary -->
+      <div class="space-y-1">
+        <h4 class="text-label-sm font-semibold uppercase tracking-wider text-text-muted">
+          Executive Match Summary
+        </h4>
+        <p class="text-body-sm text-text-primary leading-relaxed bg-surface-canvas p-3 rounded border border-border-subtle">
+          {{ feedback.summary }}
+        </p>
+      </div>
+
+      <!-- Strengths & Concerns Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Strengths -->
+        <div class="p-3 rounded bg-surface-card border border-border-subtle space-y-2">
+          <div class="flex items-center gap-1.5 text-emerald-600 font-semibold text-xs uppercase tracking-wide">
+            <CheckCircle2 class="w-4 h-4 shrink-0" />
+            <span>Demonstrated Strengths</span>
+          </div>
+          <ul class="space-y-1.5 text-xs text-text-muted">
+            <li v-for="(s, idx) in feedback.strengths" :key="idx" class="flex items-start gap-1.5">
+              <span class="text-emerald-500 font-bold shrink-0">•</span>
+              <span>{{ s }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Concerns -->
+        <div class="p-3 rounded bg-surface-card border border-border-subtle space-y-2">
+          <div class="flex items-center gap-1.5 text-amber-600 font-semibold text-xs uppercase tracking-wide">
+            <AlertTriangle class="w-4 h-4 shrink-0" />
+            <span>Profile Concerns</span>
+          </div>
+          <ul class="space-y-1.5 text-xs text-text-muted">
+            <li v-for="(c, idx) in feedback.concerns" :key="idx" class="flex items-start gap-1.5">
+              <span class="text-amber-500 font-bold shrink-0">•</span>
+              <span>{{ c }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Interview Questions -->
+      <div v-if="feedback.questions?.length" class="p-3.5 rounded bg-surface-card border border-border-subtle space-y-2">
+        <div class="flex items-center gap-1.5 text-ai-accent font-semibold text-xs uppercase tracking-wide">
+          <HelpCircle class="w-4 h-4 shrink-0" />
+          <span>Recommended Interview Prompts</span>
+        </div>
+        <ol class="space-y-2 text-xs text-text-muted list-decimal list-inside leading-relaxed">
+          <li v-for="(q, idx) in feedback.questions" :key="idx" class="pl-1">
+            <span class="text-text-primary">{{ q }}</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Screening Disclaimer -->
+      <div class="flex items-center gap-2 pt-2 border-t border-border-subtle text-[11px] text-text-muted">
+        <ShieldCheck class="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+        <span>Objective screening aid. Final hiring decisions remain with the recruiter.</span>
+      </div>
+    </AiGlowPanel>
   </div>
 </template>
-
-<style scoped>
-.ai-panel {
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px;
-  margin-top: 6px;
-  font-size: 12px;
-}
-
-.ai-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.ai-score-large { display: flex; align-items: baseline; gap: 2px; }
-
-.score-number {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--primary);
-  line-height: 1;
-}
-
-.score-label { font-size: 12px; color: var(--text-secondary); }
-
-.provider-tag {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background: var(--border);
-  color: var(--text-secondary);
-}
-
-.ai-summary {
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 4px 0 8px;
-}
-
-.ai-section { margin-bottom: 6px; }
-
-.ai-section-title {
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-
-.ai-list {
-  margin: 0;
-  padding-left: 16px;
-  color: var(--text-secondary);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-</style>
