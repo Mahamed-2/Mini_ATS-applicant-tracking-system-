@@ -209,3 +209,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 49
 - **Message**: `feat(frontend): add KanbanColumn component`
+
+### Milestone Commit 50
+- **Message**: `feat(frontend): add CandidateCard with stage select`
