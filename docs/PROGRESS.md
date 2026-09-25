@@ -206,3 +206,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 48
 - **Message**: `feat(frontend): add CandidateForm modal component`
+
+### Milestone Commit 49
+- **Message**: `feat(frontend): add KanbanColumn component`
