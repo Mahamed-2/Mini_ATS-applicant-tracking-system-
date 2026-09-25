@@ -173,3 +173,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 37
 - **Message**: `chore(frontend): scaffold Vue 3 TypeScript Vite project`
+
+### Milestone Commit 38
+- **Message**: `feat(frontend): add environment type declarations`
