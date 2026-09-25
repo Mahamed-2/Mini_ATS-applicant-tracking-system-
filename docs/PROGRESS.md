@@ -68,3 +68,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 02
 - **Message**: `docs: add ats-orchestrator skill and reference contracts`
+
+### Milestone Commit 03
+- **Message**: `chore: add allowlist gitignore and README`
