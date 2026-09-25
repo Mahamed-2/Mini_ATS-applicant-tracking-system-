@@ -167,3 +167,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 35
 - **Message**: `feat(ai): add health endpoint and main app entrypoint`
+
+### Milestone Commit 36
+- **Message**: `test(ai): add pytest unit tests for mock scorer`
