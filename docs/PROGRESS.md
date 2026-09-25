@@ -125,3 +125,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 21
 - **Message**: `feat(backend): add ICandidateService with customer scoping`
+
+### Milestone Commit 22
+- **Message**: `feat(backend): add JobsController CRUD endpoints`
