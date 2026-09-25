@@ -8,10 +8,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { supabase } from './lib/supabase'
 
 // Lazy-load views to keep the initial JS bundle small.
-const LoginView    = () => import('./views/LoginView.vue')
-const DashboardView = () => import('./views/DashboardView.vue')
-const KanbanView   = () => import('./views/KanbanView.vue')
-const AdminView    = () => import('./views/AdminView.vue')
+const LoginView           = () => import('./views/LoginView.vue')
+const DashboardView       = () => import('./views/DashboardView.vue')
+const JobsView            = () => import('./views/JobsView.vue')
+const CandidatesView      = () => import('./views/CandidatesView.vue')
+const CandidateDetailView = () => import('./views/CandidateDetailView.vue')
+const KanbanView          = () => import('./views/KanbanView.vue')
+const AdminView           = () => import('./views/AdminView.vue')
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +29,24 @@ export const router = createRouter({
       path: '/',
       name: 'dashboard',
       component: DashboardView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/jobs',
+      name: 'jobs',
+      component: JobsView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/candidates',
+      name: 'candidates',
+      component: CandidatesView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/candidates/:id',
+      name: 'candidate-detail',
+      component: CandidateDetailView,
       meta: { requiresAuth: true }
     },
     {

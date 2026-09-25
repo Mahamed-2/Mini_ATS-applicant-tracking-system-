@@ -78,5 +78,8 @@ export {
   Filter,
   Check,
   Clock,
-  FileText
+  FileText,
+  UserCheck,
+  ArrowLeft,
+  Calendar
 } from 'lucide-vue-next';
