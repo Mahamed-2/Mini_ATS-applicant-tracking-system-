@@ -140,3 +140,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 26
 - **Message**: `feat(backend): add IAdminUserService for account creation`
+
+### Milestone Commit 27
+- **Message**: `feat(backend): add AdminController create and list users`
