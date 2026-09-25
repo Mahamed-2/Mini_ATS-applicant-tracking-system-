@@ -129,7 +129,8 @@ ALTER TABLE public.jobs      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.candidates ENABLE ROW LEVEL SECURITY;
 
 -- Each user can read their own profile (needed for Supabase JS auth refresh scenarios).
-CREATE POLICY IF NOT EXISTS "profiles: user reads own"
+DROP POLICY IF EXISTS "profiles: user reads own" ON public.profiles;
+CREATE POLICY "profiles: user reads own"
   ON public.profiles
   FOR SELECT
   USING (auth.uid() = id);
