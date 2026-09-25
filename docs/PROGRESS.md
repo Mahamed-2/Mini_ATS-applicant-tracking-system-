@@ -77,3 +77,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 05
 - **Message**: `feat(supabase): add indexes for customer, job, stage, name`
+
+### Milestone Commit 06
+- **Message**: `feat(supabase): add updated_at triggers and RLS baseline`
