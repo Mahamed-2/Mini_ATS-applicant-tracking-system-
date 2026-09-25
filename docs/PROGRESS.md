@@ -164,3 +164,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 34
 - **Message**: `feat(ai): add service key authentication middleware`
+
+### Milestone Commit 35
+- **Message**: `feat(ai): add health endpoint and main app entrypoint`
