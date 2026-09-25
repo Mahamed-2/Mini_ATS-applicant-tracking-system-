@@ -53,10 +53,11 @@ Prepare this deterministic dataset before recording (see [`docs/DEMO_SEED_DATA.m
 | **0:00–0:30** | Architecture overview | Show architecture diagram (`01-architecture.svg`) | Introduce the multi-tenant architecture, .NET 10 backend, Python AI service, Vue 3 SPA, and demo customer: **Nordic Tech AB**. |
 | **0:30–1:00** | Admin login | Sign in at `http://localhost:5173/login` with `admin@nordic-recruit.demo` | Authenticate with Supabase Auth, receive JWT, validate with .NET API, and verify the `Admin` badge. |
 | **1:00–1:45** | Admin selects customer | Navigate to Admin view (`/admin`), show **Nordic Tech AB** (`recruiter@nordic-tech.demo`) | Demonstrate platform administration, user listing, customer creation, and the **Act As** tenant impersonation capability. |
-| **1:45–2:30** | Customer jobs | Switch context to **Nordic Tech AB**, view Dashboard | Show the two active customer jobs: **Senior Frontend Engineer** and **Backend Engineer .NET**, scoped via `customerId`. |
-| **2:30–3:15** | 10-Candidate Kanban | Open Kanban view (`/kanban`) showing all 10 candidates | Point out the 6 stages (New, Screening, Interview, Offer, Hired, Rejected), candidate cards with LinkedIn links, and CV extracts. |
-| **3:15–4:00** | Filtering & stage transition | Filter by `Backend Engineer .NET`, search `Nina`, search `Anna`, drag/select Hugo Silva to `Screening` | Show instant multi-parameter filtering and stage progression updates via `PATCH /api/candidates/{id}/stage`. |
-| **4:00–4:40** | AI CV assessment | Open **Anna Lund** (score null) → click **Assess CV**; compare with **Lucas Meyer** (score 42) | Show live mock AI evaluation with score, strengths, concerns, and interview questions. Contrast with Lucas Meyer's low score due to missing LinkedIn and short CV. |
+| **1:45–2:15** | Customer jobs | Switch context to **Nordic Tech AB**, view Dashboard | Show the two active customer jobs: **Senior Frontend Engineer** and **Backend Engineer .NET**, scoped via `customerId`. |
+| **2:15–2:45** | AI Pipeline Intelligence | Click **Generate AI Report** on Dashboard in the AI Pipeline Intelligence panel | Demonstrate automated pipeline intelligence: health score ring, conversion funnel, AI match histogram, data completeness, recruiter action plan, and Markdown export. |
+| **2:45–3:25** | 10-Candidate Kanban | Open Kanban view (`/kanban`) showing all 10 candidates | Point out the 6 stages (New, Screening, Interview, Offer, Hired, Rejected), candidate cards with LinkedIn links, and CV extracts. |
+| **3:25–4:05** | Filtering & stage transition | Filter by `Backend Engineer .NET`, search `Nina`, search `Anna`, drag/select Hugo Silva to `Screening` | Show instant multi-parameter filtering and stage progression updates via `PATCH /api/candidates/{id}/stage`. |
+| **4:05–4:40** | AI CV assessment | Open **Anna Lund** (score null) → click **Assess CV**; compare with **Lucas Meyer** (score 42) | Show live mock AI evaluation with score, strengths, concerns, and interview questions. Contrast with Lucas Meyer's low score due to missing LinkedIn and short CV. |
 | **4:40–5:00** | Deploy readiness & QA | Show `railway.toml`, `vercel.json`, `docs/QA.md`, and clean commit history | Review production configurations, structured comments connecting code across tiers, and QA compliance. |
 
 ---
@@ -98,6 +99,26 @@ With customer context active, navigate to **Dashboard** (`/dashboard`). Show the
 
 **Narration:**
 > *"Now acting as Nordic Tech AB, our queries are strictly tenant-isolated. We see the two open positions: Senior Frontend Engineer and Backend Engineer .NET. The customer can manage openings and track candidate pipelines per requisition."*
+
+---
+
+### Scene 4b – AI Pipeline Intelligence & Copilot Analysis (2:15–2:45)
+
+On the **Dashboard**, scroll to the **AI Pipeline Intelligence** panel. Click **Generate AI Report**.
+
+1. Walk through the **Executive Summary**: headline narrative, health score ring (e.g. 78/100, `HEALTHY` or `WATCH`), and role breakdown.
+2. Review the data-visualization cards:
+   - **Stage Conversions**: Funnel metrics across New → Screening → Interview → Offer → Hired.
+   - **AI Score Spread**: 5-bucket distribution histogram showing talent quality.
+   - **Data Completeness**: LinkedIn verification %, CV attachment %, and stale record count.
+3. Review qualitative insights:
+   - **Observed Strengths** (emerald checkmarks)
+   - **Identified Bottlenecks** (amber/rose warnings)
+   - **Recruiter Action Plan** (violet action arrows)
+4. Click **Copy .md** or **Export .md** to demonstrate markdown report generation.
+
+**Narration:**
+> *"With a single click on 'Generate AI Report', our AI service synthesizes real-time pipeline analytics. It evaluates conversion rates across the 6 Kanban stages, plots applicant qualification distributions, flags stale profiles, and suggests actionable next steps for hiring managers. The report can be copied or exported as Markdown for executive sync meetings."*
 
 ---
 
