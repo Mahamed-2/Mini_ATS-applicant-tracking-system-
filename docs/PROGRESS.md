@@ -80,3 +80,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 06
 - **Message**: `feat(supabase): add updated_at triggers and RLS baseline`
+
+### Milestone Commit 07
+- **Message**: `chore(backend): create MiniAts.Api .NET 10 project`

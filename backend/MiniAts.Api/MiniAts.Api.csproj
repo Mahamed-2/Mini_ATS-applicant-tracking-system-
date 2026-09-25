@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- Target .NET 10 as required by the prototype specification. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RootNamespace>MiniAts</RootNamespace>
+  </PropertyGroup>
+
+  <!-- NuGet packages: JWT auth, Postgres driver, Swagger, HTTP client extensions. -->
+  <ItemGroup>
+    <!-- JWT bearer authentication validated against the Supabase JWT secret. -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.*" />
+    <!-- Npgsql provides parameterized async Postgres access without an ORM. -->
+    <PackageReference Include="Npgsql" Version="9.*" />
+    <!-- Swagger UI for prototype endpoint inspection. -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.*" />
+  </ItemGroup>
+
+</Project>
