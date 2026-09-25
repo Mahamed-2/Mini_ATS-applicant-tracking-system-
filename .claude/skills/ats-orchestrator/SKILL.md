@@ -1,13 +1,17 @@
 ---
 name: ats-orchestrator
-description: Orchestrates building, extending, testing, documenting, and committing the Mini ATS prototype. Use when the user asks to implement the ATS, create backend/frontend/AI features, prepare Supabase/.NET/Vue/Python code, manage demo docs, or produce the 60-commit plan.
-disable-model-invocation: true
+description: Orchestrates building, extending, testing, documenting, and committing the Mini ATS prototype.
 allowed-tools: Read Write Edit Glob Grep Bash(git status *) Bash(git diff *) Bash(git log *) Bash(git add *) Bash(git commit *) Bash(dotnet build *) Bash(npm run build *) Bash(npm run lint *) Bash(pytest *)
+license: MIT
+compatibility: ">=1.0.0"
 ---
 
 # Mini ATS Orchestrator
 
 You are the lead engineer and code generator for a prototype Applicant Tracking System.
+
+> **Claude Code extensions note:**
+> - `disable-model-invocation: true`
 
 ## Mission
 
@@ -15,14 +19,13 @@ Build a small but coherent full-stack ATS prototype with:
 
 - Supabase Postgres as database, Supabase Auth as identity provider.
 - .NET 10 REST API with JWT validation as the main backend.
-- Python FastAPI service for simplified CV assessment.
-- Vue 3 + TypeScript + Vite frontend.
-- Admin can create admin/customer accounts.
+- Python FastAPI service for simplified CV assessment and pipeline reporting.
+- Vue 3 + TypeScript + Vite frontend styled with the Recruiter Velocity ATS design system.
+- Admin can create admin/customer accounts and act on behalf of any customer.
 - Customer can log in, create jobs, create candidates, view kanban, filter by job and name.
-- Admin can perform all customer actions on behalf of a selected customer.
-- Optional AI: assess candidate CV/profile and return score, strengths, concerns, questions.
+- AI intelligence: CV assessment and pipeline analytics report.
 - Deploy frontend to Vercel, backend/AI to Railway.
-- Produce documentation, demo script, placeholder images, and a 60-commit traceability plan.
+- Produce documentation, demo script, placeholder images, and a clean commit history.
 
 ## Hard limitations
 
@@ -52,18 +55,46 @@ Never violate these rules.
 8. **Never leave the project in a non-buildable state** at the end of a phase.
    - Run the closest available build/test command before finishing a slice.
 
-9. **Keep `SKILL.md` concise.** Move long reference material to `docs/`.
+9. **Keep `SKILL.md` concise.** Move long reference material to `reference/` and `docs/`.
 
 10. **Every non-trivial code line should have a short comment** explaining intent or relation to another file.
-    - Comment every meaningful block so a human can trace relations between backend, frontend, AI, database, env vars, endpoints, stores, and components.
-    - Do not comment obvious syntax (braces, semicolons, trivial imports).
 
-## Source of truth
+11. **Never reintroduce legacy palette values.**
+    - `#2563EB`, `#8B5CF6`, `#0b1120`, `#111827`, `#151e31`, and uncalibrated styles are strictly deprecated.
 
-Before implementing, read:
+12. **Never mix icon libraries.**
+    - Lucide is the sole icon library.
+    - AI violet (`#7c3aed`) is strictly reserved for AI features only.
 
-- `docs/QA.md` for architecture rationale.
-- `docs/DEMO.md` for demo expectations.
+## Design Source of Truth
+
+The authoritative design specification is defined in:
+- High-level spec: [`docs/DESIGN.md`](file:///Users/ahlam/Desktop/Mini_ATS/docs/DESIGN.md)
+- Complete token dictionary: [`.claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md`](file:///Users/ahlam/Desktop/Mini_ATS/.claude/skills/ats-orchestrator/reference/DESIGN_TOKENS.md)
+- Migration reference: [`.claude/skills/ats-orchestrator/reference/DESIGN_MIGRATION.md`](file:///Users/ahlam/Desktop/Mini_ATS/.claude/skills/ats-orchestrator/reference/DESIGN_MIGRATION.md)
+
+### Canonical Rules:
+- **Default Theme**: Light-dominant (`#f8f9ff` canvas, `#ffffff` card surfaces). Dark theme derived from slate-900 surfaces with the same accents.
+- **Icon Library**: Lucide only.
+- **AI Violet (`#7c3aed`)**: Reserved strictly for AI features (parsing, match %, copilot, reports). Never use for generic actions.
+- **Primary Cobalt (`#1d68f0`)**: Used for primary buttons, active items, selection, focus rings.
+- **Success Emerald (`#059669`)**: Used for hired candidates, verified state, healthy ratings.
+- **Tabular Numerics**: `font-variant-numeric: tabular-nums` required on all counts, metrics, scores, and dates.
+- **Pipeline Stage Taxonomy**:
+  - `new`: `#0284c7` (text) / `#f0f9ff` (bg) / `#bae6fd` (border)
+  - `screening`: `#d97706` (text) / `#fffbeb` (bg) / `#fde68a` (border)
+  - `interview`: `#1d68f0` (text) / `#eff6ff` (bg) / `#bfdbfe` (border)
+  - `offer`: `#7c3aed` (text) / `#f5f3ff` (bg) / `#ddd6fe` (border)
+  - `hired`: `#059669` (text) / `#ecfdf5` (bg) / `#a7f3d0` (border)
+  - `rejected`: `#e11d48` (text) / `#fff1f2` (bg) / `#fecdd3` (border)
+
+## Reference Architecture
+
+Before implementing, consult the reference guides:
+
+- `docs/QA.md` for architecture rationale and migration notes.
+- `docs/DEMO.md` for 5-minute demo flow and timing.
+- `docs/DEMO_SEED_DATA.md` for canonical 10-candidate dataset.
 - `docs/ENVIRONMENT_VARIABLES.md` for required config.
 - `supabase/migrations/0001_init.sql` for database contract.
 - `.claude/skills/ats-orchestrator/reference/ARCHITECTURE.md`
@@ -72,125 +103,8 @@ Before implementing, read:
 - `.claude/skills/ats-orchestrator/reference/FRONTEND_CONTRACT.md`
 - `.claude/skills/ats-orchestrator/reference/AI_CONTRACT.md`
 - `.claude/skills/ats-orchestrator/reference/DEPLOYMENT.md`
-
-## Stack rules
-
-### Backend
-- C# .NET 10, Web API controllers, OOP layering.
-- JWT bearer authentication validated against Supabase JWT secret.
-- Npgsql for Postgres, parameterized SQL only.
-- Layers: `Domain` → `Application` → `Infrastructure` → `Api`.
-- Controllers thin, Services contain business rules, Repositories contain SQL.
-- DTOs separate from domain entities. Async/await for all I/O.
-
-### Frontend
-- Vue 3, TypeScript, Vite, plain CSS.
-- Pinia for auth/app state. Vue Router with guards.
-- Supabase JS only for authentication.
-- .NET API for all domain data (jobs, candidates, AI assessment).
-- Never expose service role key to frontend.
-
-### AI service
-- Python FastAPI, `POST /assess`, internal service key header.
-- Return: `score`, `summary`, `strengths`, `concerns`, `questions`, `provider`.
-- If no LLM key: deterministic heuristic mock scoring.
-- Stateless. No protected-characteristic inference.
-
-### Database
-- Supabase Postgres, `auth.users` as identity source.
-- `public.profiles`, `public.jobs`, `public.candidates`.
-- RLS enabled, no broad public policies.
-- .NET API is trusted server-side data access layer.
-
-## Authentication contract
-
-1. Frontend calls `supabase.auth.signInWithPassword`.
-2. Supabase returns JWT access token.
-3. Frontend sends `Authorization: Bearer <token>` to .NET API.
-4. .NET validates signature using `Supabase:JwtSecret`.
-5. .NET loads `public.profiles` by token `sub`.
-6. .NET enforces role and `customer_id` scoping.
-
-Bootstrap: create first admin manually in Supabase Auth dashboard, then insert profile row with role `admin`.
-
-## API contract summary
-
-See `.claude/skills/ats-orchestrator/reference/API_CONTRACT.md` for full spec.
-
-- `GET /health`, `GET /api/account/me`
-- `POST /api/admin/users`, `GET /api/admin/users`
-- `GET|POST|PATCH|DELETE /api/jobs`
-- `GET|POST|PATCH|DELETE /api/candidates`, `PATCH /api/candidates/{id}/stage`
-- `POST /api/ai/candidates/{id}/assess`
-
-## Database contract summary
-
-See `.claude/skills/ats-orchestrator/reference/DATABASE_CONTRACT.md`.
-
-Tables: `profiles`, `jobs`, `candidates`.
-Enums: `user_role (admin|customer)`, `candidate_stage (new|screening|interview|offer|hired|rejected)`.
-Indexes on customer, job, stage, name. Triggers for `updated_at`. RLS enabled.
-
-## Frontend contract summary
-
-See `.claude/skills/ats-orchestrator/reference/FRONTEND_CONTRACT.md`.
-
-Routes: `/login`, `/`, `/kanban`, `/admin`.
-Stores: auth store, ATS store.
-Components: LoginView, DashboardView, KanbanView, AdminView, AppShell, JobForm, CandidateForm, KanbanColumn, CandidateCard, AiAssessmentPanel.
-
-## AI contract summary
-
-See `.claude/skills/ats-orchestrator/reference/AI_CONTRACT.md`.
-
-Request: `candidate_name`, `job_title`, `job_description`, `cv_text`, `linkedin_url`, `summary`.
-Response: `score`, `summary`, `strengths`, `concerns`, `questions`, `provider`.
-
-## Deployment contract summary
-
-See `.claude/skills/ats-orchestrator/reference/DEPLOYMENT.md`.
-
-Frontend → Vercel. Backend + AI service → Railway. Health endpoints at `/health`.
-
-## Workflow phases
-
-Work in vertical slices. For each slice:
-1. Read relevant existing files.
-2. State short plan.
-3. Implement smallest coherent change.
-4. Add comments linking relations.
-5. Run build/test if available.
-6. Update docs if contract changed.
-7. Create a conventional commit.
-
-Preferred order: repo skeleton → DB → .NET auth → profile → admin → jobs → candidates → AI proxy → Python AI → Vue scaffold → auth/dashboard → kanban → admin UI → AI UI → deploy → docs → build/test → 60 commits.
-
-## Definition of done
-
-- Code compiles or missing-dependency notes are clear.
-- No secrets committed.
-- Comments explain line intent and cross-file relations.
-- API and DB contracts respected.
-- Customer isolation enforced.
-- Admin can act on behalf of customer.
-- Kanban filters by job and name.
-- AI assessment returns structured JSON.
-- Demo doc and commit plan exist.
-
-## Commands to prefer
-
-```bash
-dotnet build backend/MiniAts.Api/MiniAts.Api.csproj
-npm --prefix frontend install && npm --prefix frontend run build
-python -m pytest backend/ai-service
-git rev-list --count HEAD
-```
-
-## References
-
-- `.claude/skills/ats-orchestrator/reference/ARCHITECTURE.md`
-- `.claude/skills/ats-orchestrator/reference/API_CONTRACT.md`
-- `.claude/skills/ats-orchestrator/reference/DATABASE_CONTRACT.md`
-- `.claude/skills/ats-orchestrator/reference/FRONTEND_CONTRACT.md`
-- `.claude/skills/ats-orchestrator/reference/AI_CONTRACT.md`
-- `.claude/skills/ats-orchestrator/reference/DEPLOYMENT.md`
+- `.claude/skills/ats-orchestrator/reference/COMPONENT_KIT.md`
+- `.claude/skills/ats-orchestrator/reference/SHELL_DASHBOARD.md`
+- `.claude/skills/ats-orchestrator/reference/AI_REPORT.md`
+- `.claude/skills/ats-orchestrator/reference/LOGIN.md`
+- `.claude/skills/ats-orchestrator/reference/PAGE_RESKIN.md`
