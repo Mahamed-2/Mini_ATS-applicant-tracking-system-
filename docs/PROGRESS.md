@@ -233,3 +233,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 57
 - **Message**: `chore(deploy): add Python AI service Procfile`
+
+### Milestone Commit 58
+- **Message**: `docs: add environment variables reference document`
