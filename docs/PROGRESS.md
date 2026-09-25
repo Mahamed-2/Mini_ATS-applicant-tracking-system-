@@ -92,3 +92,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 10
 - **Message**: `feat(backend): add Npgsql data source registration`
+
+### Milestone Commit 11
+- **Message**: `feat(backend): add CORS policy for frontend origins`
