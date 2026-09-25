@@ -161,3 +161,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 33
 - **Message**: `feat(ai): add OpenAI LLM adapter with fallback`
+
+### Milestone Commit 34
+- **Message**: `feat(ai): add service key authentication middleware`
