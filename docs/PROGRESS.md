@@ -158,3 +158,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 32
 - **Message**: `feat(ai): add deterministic mock CV scorer`
+
+### Milestone Commit 33
+- **Message**: `feat(ai): add OpenAI LLM adapter with fallback`
