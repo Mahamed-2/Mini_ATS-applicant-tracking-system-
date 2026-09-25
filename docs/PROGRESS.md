@@ -179,3 +179,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 39
 - **Message**: `feat(frontend): add Supabase client singleton`
+
+### Milestone Commit 40
+- **Message**: `feat(frontend): add authenticated API fetch client`
