@@ -128,3 +128,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 22
 - **Message**: `feat(backend): add JobsController CRUD endpoints`
+
+### Milestone Commit 23
+- **Message**: `feat(backend): add CandidatesController CRUD and stage update`
