@@ -203,3 +203,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 47
 - **Message**: `feat(frontend): add JobForm modal component`
+
+### Milestone Commit 48
+- **Message**: `feat(frontend): add CandidateForm modal component`
