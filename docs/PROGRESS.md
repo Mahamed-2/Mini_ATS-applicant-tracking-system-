@@ -149,3 +149,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 29
 - **Message**: `feat(backend): add AiController assess endpoint with result storage`
+
+### Milestone Commit 30
+- **Message**: `chore(ai): create Python FastAPI project structure`
