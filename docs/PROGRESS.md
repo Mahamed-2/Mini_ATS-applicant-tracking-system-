@@ -188,3 +188,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 42
 - **Message**: `feat(frontend): add Pinia ATS store for jobs and candidates`
+
+### Milestone Commit 43
+- **Message**: `feat(frontend): add Vue Router with authentication guards`
