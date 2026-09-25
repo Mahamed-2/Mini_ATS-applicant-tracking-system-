@@ -101,3 +101,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 13
 - **Message**: `feat(backend): add Profile and Job domain entities`
+
+### Milestone Commit 14
+- **Message**: `feat(backend): add Candidate entity and CandidateStage enum`
