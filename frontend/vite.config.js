@@ -2,6 +2,7 @@
 // Related: package.json (plugin versions)
 //          src/env.d.ts (VITE_ env variable types)
 //          frontend/vercel.json (SPA rewrite for Vercel deploy)
+import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 export default defineConfig({
@@ -9,6 +10,11 @@ export default defineConfig({
         // Vue plugin compiles .vue SFCs including <script setup> and <style scoped>.
         vue()
     ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
     server: {
         // Local dev server port – matches README and CORS config in .NET backend.
         port: 5173
