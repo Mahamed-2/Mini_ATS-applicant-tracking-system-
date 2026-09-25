@@ -65,3 +65,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 01
 - **Message**: `chore: initialize repository skeleton and git config`
+
+### Milestone Commit 02
+- **Message**: `docs: add ats-orchestrator skill and reference contracts`
