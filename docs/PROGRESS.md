@@ -146,3 +146,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 28
 - **Message**: `feat(backend): add IAiClient HTTP client for Python service`
+
+### Milestone Commit 29
+- **Message**: `feat(backend): add AiController assess endpoint with result storage`
