@@ -113,3 +113,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 17
 - **Message**: `feat(backend): add IJobRepository and JobRepository`
+
+### Milestone Commit 18
+- **Message**: `feat(backend): add ICandidateRepository and CandidateRepository`
