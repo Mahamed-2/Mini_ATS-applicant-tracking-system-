@@ -200,3 +200,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 46
 - **Message**: `feat(frontend): add DashboardView with job list`
+
+### Milestone Commit 47
+- **Message**: `feat(frontend): add JobForm modal component`
