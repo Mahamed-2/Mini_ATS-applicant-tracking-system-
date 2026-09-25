@@ -170,3 +170,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 36
 - **Message**: `test(ai): add pytest unit tests for mock scorer`
+
+### Milestone Commit 37
+- **Message**: `chore(frontend): scaffold Vue 3 TypeScript Vite project`
