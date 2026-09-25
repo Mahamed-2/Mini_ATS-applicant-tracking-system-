@@ -86,3 +86,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 08
 - **Message**: `feat(backend): add appsettings and connection string config`
+
+### Milestone Commit 09
+- **Message**: `feat(backend): configure JWT bearer authentication`
