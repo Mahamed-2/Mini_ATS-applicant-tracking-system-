@@ -110,3 +110,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 16
 - **Message**: `feat(backend): add IProfileRepository interface and implementation`
+
+### Milestone Commit 17
+- **Message**: `feat(backend): add IJobRepository and JobRepository`
