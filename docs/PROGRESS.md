@@ -134,3 +134,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 24
 - **Message**: `feat(backend): add AccountController for current user profile`
+
+### Milestone Commit 25
+- **Message**: `feat(backend): add ISupabaseAdminClient and implementation`
