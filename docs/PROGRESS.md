@@ -152,3 +152,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 30
 - **Message**: `chore(ai): create Python FastAPI project structure`
+
+### Milestone Commit 31
+- **Message**: `feat(ai): add assessment request and response Pydantic models`
