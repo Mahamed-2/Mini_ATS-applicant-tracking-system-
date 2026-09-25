@@ -116,3 +116,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 18
 - **Message**: `feat(backend): add ICandidateRepository and CandidateRepository`
+
+### Milestone Commit 19
+- **Message**: `feat(backend): add CurrentUserMiddleware to load caller profile`
