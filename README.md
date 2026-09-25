@@ -70,13 +70,34 @@ npm run dev  # opens http://localhost:5173
 
 ## Demo seed data
 
-```text
-Admin:    admin@demo-ats.local
-Customer: customer@demo-ats.local  /  Company: Nordic Tech AB
+The project includes a deterministic 10-candidate canonical demo dataset designed for a complete 5-minute presentation:
 
-Job: Senior Frontend Engineer
-Candidates: Anna Lund (new), Erik Berg (screening), Maria Karlsson (interview)
+```text
+Admin:      admin@nordic-recruit.demo  (Nordic Recruit)
+Customer:   recruiter@nordic-tech.demo (Nordic Tech AB)
+
+Jobs (2):   Senior Frontend Engineer (Vue 3 + TS)
+            Backend Engineer .NET (.NET 10 + Postgres + AI)
+
+Candidates (10):
+- New:       Anna Lund (live AI demo), Elsa Moreau, Hugo Silva
+- Screening: Erik Berg, Lucas Meyer (low score: 42, missing LinkedIn)
+- Interview: Maria Karlsson (high score: 86), Nina Patel (high score: 84)
+- Offer:     Jonas Nyström
+- Hired:     Sofia Lindqvist
+- Rejected:  Oscar Dahl (low score: 48, stack mismatch)
 ```
+
+To seed this dataset:
+1. **SQL Method**: Ensure the two demo auth users exist (see [`supabase/seed/create_demo_auth_users.md`](supabase/seed/create_demo_auth_users.md)), then execute [`supabase/seed/demo_data.sql`](supabase/seed/demo_data.sql) in your Supabase SQL editor.
+2. **Automated Helper**:
+   ```bash
+   export SUPABASE_URL="https://your-project.supabase.co"
+   export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+   python scripts/seed-demo.py
+   ```
+
+For the comprehensive dataset breakdown and test filter queries, consult [`docs/DEMO_SEED_DATA.md`](docs/DEMO_SEED_DATA.md).
 
 ## Demo
 
@@ -93,9 +114,11 @@ python scripts/generate-demo-placeholders.py
 |---|---|
 | [`docs/QA.md`](docs/QA.md) | Architecture Q&A (why and how) |
 | [`docs/DEMO.md`](docs/DEMO.md) | 5-minute demo script |
+| [`docs/DEMO_SEED_DATA.md`](docs/DEMO_SEED_DATA.md) | Canonical 10-candidate demo dataset guide |
 | [`docs/ENVIRONMENT_VARIABLES.md`](docs/ENVIRONMENT_VARIABLES.md) | All env vars documented |
 | [`docs/COMMIT_PLAN.md`](docs/COMMIT_PLAN.md) | 60-commit plan |
 | [`docs/PROGRESS.md`](docs/PROGRESS.md) | Implementation progress log |
+| [`supabase/seed/create_demo_auth_users.md`](supabase/seed/create_demo_auth_users.md) | Auth user provisioning guide |
 
 ## AI orchestrator skill
 
