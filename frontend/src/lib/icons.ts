@@ -76,5 +76,7 @@ export {
   ChevronDown,
   ChevronRight,
   Filter,
-  Check
+  Check,
+  Clock,
+  FileText
 } from 'lucide-vue-next';

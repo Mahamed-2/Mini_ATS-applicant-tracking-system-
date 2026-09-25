@@ -24,6 +24,7 @@ import ToastSandboxCard from '@/components/ui/ToastSandboxCard.vue';
 import CandidateMicroCard from '@/components/ui/CandidateMicroCard.vue';
 import MultiTenantSwitcher, { type TenantOption } from '@/components/ui/MultiTenantSwitcher.vue';
 import ConformanceNotesGrid from '@/components/ui/ConformanceNotesGrid.vue';
+import AiPipelineIntelligence from '@/components/ui/AiPipelineIntelligence.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -153,6 +154,9 @@ const featuredCandidate = computed(() => {
       :is-admin="authStore.isAdmin"
       @navigate="handleNavigate"
     />
+
+    <!-- AI Pipeline Intelligence & Copilot Analysis Report -->
+    <AiPipelineIntelligence />
 
     <!-- 4. Three-Column Interactive Row: Sandbox, MicroCard Pattern, Tenant Switcher -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

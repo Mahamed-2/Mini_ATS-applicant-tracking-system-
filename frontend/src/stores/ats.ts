@@ -69,6 +69,79 @@ export interface CreateCandidateDto {
   stage?: string
 }
 
+// ── Pipeline Report Types ─────────────────────────────────────────────────────
+
+export interface FunnelStageMetrics {
+  stage: string
+  count: number
+  conversionPct: number
+}
+
+export interface ScoreDistributionBucket {
+  bucket: string
+  count: number
+  percentage: number
+}
+
+export interface JobMetricItem {
+  id: string
+  title: string
+  candidateCount: number
+  avgAiScore: number
+}
+
+export interface CandidateRankItem {
+  id: string
+  name: string
+  jobTitle: string
+  stage: string
+  score: number
+}
+
+export interface StaleCandidateItem {
+  id: string
+  name: string
+  stage: string
+  daysInStage: number
+}
+
+export interface DataQualityCoverage {
+  linkedinPct: number
+  cvTextPct: number
+  shortCvPct: number
+  missingEmailPct: number
+}
+
+export interface StageInsight {
+  stage: string
+  insight: string
+}
+
+export interface PipelineReport {
+  headline: string
+  score: number
+  rating: 'healthy' | 'watch' | 'risk'
+  summary: string
+  strengths: string[]
+  risks: string[]
+  recommendations: string[]
+  stageInsights: StageInsight[]
+  provider: 'mock' | 'llm'
+  totalCandidates: number
+  totalJobs: number
+  overallHireRate: number
+  avgAiScore: number
+  funnel: FunnelStageMetrics[]
+  scoreDistribution: ScoreDistributionBucket[]
+  coverage: DataQualityCoverage
+  jobs: JobMetricItem[]
+  staleCandidates: StaleCandidateItem[]
+  outliers: string[]
+  topCandidates: CandidateRankItem[]
+  bottomCandidates: CandidateRankItem[]
+  generatedAt: string
+}
+
 // ── Store ─────────────────────────────────────────────────────────────────────
 
 export const useAtsStore = defineStore('ats', () => {
@@ -162,17 +235,46 @@ export const useAtsStore = defineStore('ats', () => {
     return result
   }
 
+  // ── AI Pipeline Intelligence Report ──────────────────────────────────────────
+
+  const pipelineReport = ref<PipelineReport | null>(null)
+  const reportLoading = ref(false)
+  const reportError = ref<string | null>(null)
+
+  /** Generate or regenerate AI pipeline report via POST /api/ai/reports/pipeline. */
+  async function generatePipelineReport(customerId: string): Promise<PipelineReport> {
+    reportLoading.value = true
+    reportError.value = null
+    try {
+      const report = await apiFetch<PipelineReport>('/api/ai/reports/pipeline', {
+        method: 'POST',
+        body: JSON.stringify({ customerId })
+      })
+      pipelineReport.value = report
+      return report
+    } catch (e) {
+      reportError.value = (e as Error).message
+      throw e
+    } finally {
+      reportLoading.value = false
+    }
+  }
+
   return {
     jobs,
     candidates,
     filters,
     loading,
     error,
+    pipelineReport,
+    reportLoading,
+    reportError,
     loadJobs,
     loadCandidates,
     createJob,
     createCandidate,
     moveStage,
-    assessCandidate
+    assessCandidate,
+    generatePipelineReport
   }
 })
