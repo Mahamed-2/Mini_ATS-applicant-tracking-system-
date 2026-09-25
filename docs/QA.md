@@ -238,3 +238,20 @@ The Vue store reloads candidates whenever the filter values change (via `watch`)
 6. Add CI/CD with GitHub Actions running dotnet test and npm run build.
 7. Add EEOC-safe AI audit log with full explainability trail.
 8. Add real-time Kanban updates via Supabase Realtime or WebSockets.
+
+---
+
+## Q18: Why was the frontend design migrated to Recruiter Velocity ATS, and how were token conflicts resolved?
+
+**A:**
+
+The original UI design used a generic blue-and-dark-navy palette (`#2563EB`, `#0b1120`) that lacked the density and specialized aesthetics expected of an executive-grade recruiting platform. The prototype was migrated to the **Recruiter Velocity ATS** design system (`docs/DESIGN.md`) with framework-specification layouts matching `code.html`.
+
+### Key Conflict Resolutions (Authoritative Canonical Decisions):
+1. **AI Violet Token**: Source specs contained `#712ae2` vs `#7c3aed`. Canonical value is locked to `--ai-accent: #7c3aed` and is **strictly reserved for AI features** (match %, CV parsing, copilot, AI pipeline reports) to maintain clear semantic signaling.
+2. **Success Emerald**: Normalized to `--success: #059669` for verified status and hired stages.
+3. **Canvas Surface**: Standardized on `--canvas: #f8f9ff` with `#ffffff` cards and derived slate-900 surfaces in dark mode, removing the deprecated dark-navy background.
+4. **Radii System**: Strict 3-tier hierarchy: `4px` for inputs/badges/small buttons, `8px` for cards/modals/panels, and `9999px` for stage chips and AI match score pills.
+5. **Icon Library**: Standardized exclusively on **Lucide**; Material icon names from earlier mocks are mapped 1-to-1 in `frontend/src/lib/icons.ts`.
+6. **Tabular Numerics**: `font-variant-numeric: tabular-nums` is enforced across all metric cards, scores, dates, and stage counts to eliminate visual jitter.
+
