@@ -131,3 +131,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 23
 - **Message**: `feat(backend): add CandidatesController CRUD and stage update`
+
+### Milestone Commit 24
+- **Message**: `feat(backend): add AccountController for current user profile`
