@@ -5,14 +5,11 @@
 # Re-include only the files and folders required for the web prototype.
 !/.gitignore
 !/README.md
-!/docs/
 !/backend/
 !/frontend/
 !/supabase/
-!/.claude/
 !/scripts/
 !/railway.toml
-!/.github/
 
 # Claude Code local settings stay private per developer.
 .claude/settings.local.json
