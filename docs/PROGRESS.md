@@ -212,3 +212,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 50
 - **Message**: `feat(frontend): add CandidateCard with stage select`
+
+### Milestone Commit 51
+- **Message**: `feat(frontend): add KanbanView with job and name filters`
