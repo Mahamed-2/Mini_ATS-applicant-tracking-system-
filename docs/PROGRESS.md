@@ -104,3 +104,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 14
 - **Message**: `feat(backend): add Candidate entity and CandidateStage enum`
+
+### Milestone Commit 15
+- **Message**: `feat(backend): add application DTOs and request/response models`
