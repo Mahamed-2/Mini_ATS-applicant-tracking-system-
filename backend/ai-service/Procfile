@@ -1,0 +1,3 @@
+# Railway uses Procfile to determine how to start the service.
+# PORT env var is injected automatically by Railway.
+web: uvicorn main:app --host 0.0.0.0 --port ${PORT:-8001}

@@ -230,3 +230,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 56
 - **Message**: `chore(deploy): add Railway toml for .NET build and start`
+
+### Milestone Commit 57
+- **Message**: `chore(deploy): add Python AI service Procfile`
