@@ -194,3 +194,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 44
 - **Message**: `feat(frontend): add AppShell layout component`
+
+### Milestone Commit 45
+- **Message**: `feat(frontend): add LoginView with Supabase password auth`
