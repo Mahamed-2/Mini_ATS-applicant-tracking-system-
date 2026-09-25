@@ -74,3 +74,6 @@ This file is updated during each implementation phase for traceability.
 
 ### Milestone Commit 04
 - **Message**: `feat(supabase): add initial migration with enums and tables`
+
+### Milestone Commit 05
+- **Message**: `feat(supabase): add indexes for customer, job, stage, name`
