@@ -20,6 +20,12 @@ Executive-grade, high-density Applicant Tracking System built with:
 - **Python FastAPI** — AI pipeline analysis and candidate CV match scoring service
 - **Supabase PostgreSQL + Supabase Auth** — deterministic workspace isolation and identity
 
+## System Architecture
+
+<p align="center">
+  <img src="./architecture.svg" alt="Mini ATS — Canonical Architecture & System Path Map" width="100%" />
+</p>
+
 ## Features
 
 | Who | Can do |
@@ -115,11 +121,16 @@ For the comprehensive dataset breakdown and test filter queries, consult [`docs/
 
 ## Deploy
 
-- **Frontend → Vercel**: connect `frontend/` directory, set env vars.
-- **Backend → Railway**: uses `railway.toml` at repo root.
-- **AI service → Railway**: second service pointing at `backend/ai-service/`, uses `Procfile`.
+| Component | Platform | Status / Live URL |
+|---|---|---|
+| **Frontend Web App** | Vercel | [https://mini-ats-demo.vercel.app](https://mini-ats-demo.vercel.app) |
+| **Backend REST API** | Railway | [https://mini-ats-production-3846.up.railway.app](https://mini-ats-production-3846.up.railway.app) |
+| **Swagger UI** | Railway | [https://mini-ats-production-3846.up.railway.app/swagger](https://mini-ats-production-3846.up.railway.app/swagger) |
+| **Health Check** | Railway | [https://mini-ats-production-3846.up.railway.app/health](https://mini-ats-production-3846.up.railway.app/health) |
 
-See [`docs/ENVIRONMENT_VARIABLES.md`](docs/ENVIRONMENT_VARIABLES.md) for all required env vars.
+- **Frontend → Vercel**: connected `frontend/` directory with Vite preset and environment variables.
+- **Backend → Railway**: containerized with multi-stage `Dockerfile` and dynamic port binding.
+- **AI service → Railway**: FastAPI service with internal key authentication.
 
 ## Known limitations (prototype)
 

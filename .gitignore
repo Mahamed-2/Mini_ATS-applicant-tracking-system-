@@ -11,6 +11,8 @@
 !/scripts/
 !/railway.toml
 !/Dockerfile
+!/architecture.svg
+!/gemini-svg (1).svg
 
 # Claude Code local settings stay private per developer.
 .claude/settings.local.json
