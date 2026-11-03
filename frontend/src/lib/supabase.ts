@@ -13,5 +13,26 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 // Public anon key – safe to expose in the browser; RLS limits data access.
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+// Clean up any stale Supabase session tokens from dead projects in localStorage
+if (typeof window !== 'undefined' && window.localStorage) {
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i)
+      if (key && (key.startsWith('sb-') && key.endsWith('-auth-token'))) {
+        localStorage.removeItem(key)
+      }
+    }
+  } catch {
+    // Ignore storage access errors
+  }
+}
+
 // Create and export a single Supabase client instance shared across stores and components.
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Disable autoRefreshToken and persistSession to prevent automatic refresh requests to dead/placeholder endpoints.
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+    detectSessionInUrl: false
+  }
+})

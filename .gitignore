@@ -13,6 +13,7 @@
 !/Dockerfile
 !/architecture.svg
 !/gemini-svg (1).svg
+!/DEMO_TALK_4_5_MIN.md
 
 # Claude Code local settings stay private per developer.
 .claude/settings.local.json

@@ -32,8 +32,28 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   // Use in-memory token first for 0ms latency; fall back to storage only if uninitialized
   let token = activeToken
   if (!token) {
-    const { data } = await supabase.auth.getSession()
-    token = data.session?.access_token ?? null
+    try {
+      const saved = localStorage.getItem('mini_ats_demo_session')
+      if (saved) {
+        const mock = JSON.parse(saved)
+        token = mock?.access_token ?? null
+      }
+    } catch {
+      // ignore
+    }
+
+    if (!token) {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+      const isDefunctUrl = !supabaseUrl || supabaseUrl.includes('etmzfmloibscvvbnmrem')
+      if (!isDefunctUrl) {
+        try {
+          const { data } = await supabase.auth.getSession()
+          token = data?.session?.access_token ?? null
+        } catch {
+          // ignore
+        }
+      }
+    }
     if (token) activeToken = token
   }
 

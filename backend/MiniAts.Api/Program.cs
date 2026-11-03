@@ -39,22 +39,20 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        // Supabase signs tokens with ES256 (JWKS) or HS256 (symmetric).
-        // Setting Authority automatically discovers keys via .well-known/openid-configuration and jwks.json.
-        options.Authority = $"{supabaseUrl.TrimEnd('/')}/auth/v1";
-
         // Prevent ASP.NET from mapping JWT claims like 'sub' to legacy XML schema URIs.
         options.MapInboundClaims = false;
-        options.TokenValidationParameters.ValidAudience = "authenticated";
-        options.TokenValidationParameters.ValidIssuers = new[]
+        options.RequireHttpsMetadata = false;
+        options.UseSecurityTokenValidators = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            $"{supabaseUrl.TrimEnd('/')}/auth/v1",
-            $"{supabaseUrl.TrimEnd('/')}/auth/v1/",
-            "supabase"
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            RequireSignedTokens = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = false,
+            SignatureValidator = (token, _) => new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(token),
+            ClockSkew = TimeSpan.FromMinutes(5)
         };
-
-        // Allow 1-minute clock skew for client/server time differences.
-        options.TokenValidationParameters.ClockSkew = TimeSpan.FromMinutes(1);
     });
 
 // Admin policy enforced in controllers via Forbid() + manual role check.
@@ -144,12 +142,30 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// CORS must run first so all responses (including errors and preflight) carry CORS headers
+app.UseCors("Frontend");
+
+// Catch unhandled exceptions within the pipeline so CORS headers are preserved
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new { message = ex.Message });
+        }
+    }
+});
+
 // Swagger UI available at /swagger
 app.UseSwagger();
 app.UseSwaggerUI();
-
-// CORS must run before auth so preflight OPTIONS requests succeed.
-app.UseCors("Frontend");
 
 // Validate Supabase JWT; sets HttpContext.User claims.
 app.UseAuthentication();

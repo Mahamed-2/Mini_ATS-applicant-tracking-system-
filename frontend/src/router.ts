@@ -79,11 +79,35 @@ router.beforeEach(async (to) => {
   // 1. Fast in-memory check (0ms)
   let authenticated = authStore.isAuthenticated
   if (!authenticated) {
-    // 2. Fall back to Supabase storage on cold load / direct page reload
-    const { data } = await supabase.auth.getSession()
-    authenticated = Boolean(data.session)
-    if (data.session && !authStore.session) {
-      authStore.session = data.session
+    // 2. Check saved demo session first
+    try {
+      const saved = localStorage.getItem('mini_ats_demo_session')
+      if (saved) {
+        const mock = JSON.parse(saved)
+        if (mock?.access_token) {
+          authStore.session = mock
+          authenticated = true
+        }
+      }
+    } catch {
+      // ignore
+    }
+
+    // 3. Fall back to Supabase session only if not defunct
+    if (!authenticated) {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+      const isDefunctUrl = !supabaseUrl || supabaseUrl.includes('etmzfmloibscvvbnmrem')
+      if (!isDefunctUrl) {
+        try {
+          const { data } = await supabase.auth.getSession()
+          authenticated = Boolean(data?.session)
+          if (data?.session && !authStore.session) {
+            authStore.session = data.session
+          }
+        } catch {
+          // Supabase network unreachable
+        }
+      }
     }
   }
 

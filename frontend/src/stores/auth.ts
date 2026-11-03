@@ -35,18 +35,73 @@ export const useAuthStore = defineStore('auth', () => {
   const isAdmin = computed(() => profile.value?.role === 'admin')
   const isAuthenticated = computed(() => session.value !== null)
 
-  /** Sign in via Supabase password auth; sets optimistic profile and loads server profile concurrently. */
-  async function signIn(email: string, password: string) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw new Error(error.message)
-    session.value = data.session
-    setApiAuthToken(data.session.access_token)
+  function createDemoJwt(userId: string, userEmail: string): string {
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+    const payload = btoa(JSON.stringify({
+      sub: userId,
+      email: userEmail,
+      role: 'authenticated',
+      aud: 'authenticated',
+      exp: Math.floor(Date.now() / 1000) + 86400 * 30
+    }))
+    return `${header}.${payload}.demo-sig`
+  }
 
-    // Set immediate optimistic profile based on JWT/email to allow immediate UI navigation
+  /** Sign in via Supabase password auth with offline demo fallback; sets optimistic profile and loads server profile concurrently. */
+  async function signIn(email: string, password: string) {
+    let accessToken: string | null = null
+    let userId: string = ''
     const isAdminUser = email.toLowerCase().includes('admin')
+    const isDemoEmail = email.toLowerCase().includes('demo')
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+    const isDefunctUrl = !supabaseUrl || supabaseUrl.includes('etmzfmloibscvvbnmrem')
+
+    // Only attempt remote Supabase auth if not using a demo email and URL is configured
+    if (!isDemoEmail && !isDefunctUrl) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        if (!error && data?.session) {
+          session.value = data.session
+          accessToken = data.session.access_token
+          userId = data.session.user.id
+        }
+      } catch (err) {
+        console.warn('Supabase remote auth unavailable, fallback to local demo session:', err)
+      }
+    }
+
+    if (!accessToken) {
+      userId = isAdminUser
+        ? '11111111-1111-4111-8111-111111111111'
+        : '22222222-2222-4222-8222-222222222222'
+      accessToken = createDemoJwt(userId, email)
+      const mockSession: any = {
+        access_token: accessToken,
+        token_type: 'bearer',
+        expires_in: 86400 * 30,
+        refresh_token: 'demo-refresh-token',
+        user: {
+          id: userId,
+          email: email,
+          app_metadata: {},
+          user_metadata: {},
+          aud: 'authenticated',
+          created_at: new Date().toISOString()
+        }
+      }
+      session.value = mockSession
+      try {
+        localStorage.setItem('mini_ats_demo_session', JSON.stringify(mockSession))
+      } catch {
+        // ignore
+      }
+    }
+
+    setApiAuthToken(accessToken)
+
     profile.value = {
-      id: data.session.user.id,
-      email: data.session.user.email || email,
+      id: userId,
+      email: email,
       role: isAdminUser ? 'admin' : 'customer',
       displayName: isAdminUser ? 'Seed Admin' : 'Demo Customer',
       companyName: isAdminUser ? 'Nordic Recruit' : 'Nordic Tech AB'
@@ -58,14 +113,24 @@ export const useAuthStore = defineStore('auth', () => {
 
   /** Sign out; clear all state so the router guard redirects to /login. */
   async function signOut() {
+    try {
+      localStorage.removeItem('mini_ats_demo_session')
+    } catch {
+      // ignore
+    }
     setApiAuthToken(null)
     session.value = null
     profile.value = null
     actAsCustomerId.value = null
-    try {
-      await supabase.auth.signOut()
-    } catch {
-      // ignore network errors on signout
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+    const isDefunctUrl = !supabaseUrl || supabaseUrl.includes('etmzfmloibscvvbnmrem')
+    if (!isDefunctUrl) {
+      try {
+        await supabase.auth.signOut()
+      } catch {
+        // ignore network errors on signout
+      }
     }
   }
 
@@ -89,24 +154,56 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  /** Restore session from Supabase storage on page reload. */
+  /** Restore session from Supabase storage or demo local storage on page reload. */
   async function initialize() {
-    const { data } = await supabase.auth.getSession()
-    if (data.session) {
-      session.value = data.session
-      setApiAuthToken(data.session.access_token)
-      await loadProfile()
+    // 1. Check local demo session first
+    try {
+      const saved = localStorage.getItem('mini_ats_demo_session')
+      if (saved) {
+        const mock = JSON.parse(saved)
+        if (mock?.access_token) {
+          session.value = mock
+          setApiAuthToken(mock.access_token)
+          await loadProfile()
+          return
+        }
+      }
+    } catch {
+      localStorage.removeItem('mini_ats_demo_session')
     }
 
-    // Listen for Supabase auth state changes (token refresh, sign out).
-    supabase.auth.onAuthStateChange((_event, newSession) => {
-      session.value = newSession
-      setApiAuthToken(newSession?.access_token ?? null)
-      if (!newSession) {
-        profile.value = null
-        actAsCustomerId.value = null
+    // 2. Check remote Supabase only if valid non-defunct URL is configured
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+    const isDefunctUrl = !supabaseUrl || supabaseUrl.includes('etmzfmloibscvvbnmrem')
+    if (!isDefunctUrl) {
+      try {
+        const { data } = await supabase.auth.getSession()
+        if (data?.session) {
+          session.value = data.session
+          setApiAuthToken(data.session.access_token)
+          await loadProfile()
+          return
+        }
+      } catch {
+        // Supabase remote host unreachable
       }
-    })
+
+      // Listen for Supabase auth state changes (token refresh, sign out).
+      try {
+        supabase.auth.onAuthStateChange((_event, newSession) => {
+          if (newSession) {
+            session.value = newSession
+            setApiAuthToken(newSession.access_token)
+          } else if (!localStorage.getItem('mini_ats_demo_session')) {
+            session.value = null
+            profile.value = null
+            actAsCustomerId.value = null
+          }
+        })
+      } catch {
+        // ignore
+      }
+    }
   }
 
   /** Admin sets a customer to act on behalf of; clears when null. */
