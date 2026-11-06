@@ -123,10 +123,9 @@ For the comprehensive dataset breakdown and test filter queries, consult [`docs/
 
 | Component | Platform | Status / Live URL |
 |---|---|---|
-| **Frontend Web App** | Vercel | [https://mini-ats-demo.vercel.app](https://mini-ats-demo.vercel.app) |
-| **Backend REST API** | Railway | [https://mini-ats-production-3846.up.railway.app](https://mini-ats-production-3846.up.railway.app) |
-| **Swagger UI** | Railway | [https://mini-ats-production-3846.up.railway.app/swagger](https://mini-ats-production-3846.up.railway.app/swagger) |
-| **Health Check** | Railway | [https://mini-ats-production-3846.up.railway.app/health](https://mini-ats-production-3846.up.railway.app/health) |
+| **Frontend Web App** | Vercel | [https://mini-ats-web.vercel.app](https://mini-ats-web.vercel.app) |
+| **Backend REST API** | Railway | [https://backend-production-5a9c.up.railway.app](https://backend-production-5a9c.up.railway.app) |
+| **Health Check** | Railway | [https://backend-production-5a9c.up.railway.app/health](https://backend-production-5a9c.up.railway.app/health) |
 
 - **Frontend → Vercel**: connected `frontend/` directory with Vite preset and environment variables.
 - **Backend → Railway**: containerized with multi-stage `Dockerfile` and dynamic port binding.
