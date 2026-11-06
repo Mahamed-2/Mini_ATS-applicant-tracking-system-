@@ -86,6 +86,14 @@ router.beforeEach(async (to) => {
         const mock = JSON.parse(saved)
         if (mock?.access_token) {
           authStore.session = mock
+          const { setApiAuthToken } = await import('./lib/api')
+          setApiAuthToken(mock.access_token)
+
+          const savedProfile = localStorage.getItem('mini_ats_demo_profile')
+          if (savedProfile && !authStore.profile) {
+            authStore.profile = JSON.parse(savedProfile)
+          }
+
           authenticated = true
         }
       }

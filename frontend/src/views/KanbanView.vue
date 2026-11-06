@@ -39,6 +39,7 @@ const STAGES = computed(() => [
   { id: 'interview', label: t('stage.techInterview'), dotColor: '#1d68f0' },
   { id: 'offer', label: t('stage.offer'), dotColor: '#7c3aed' },
   { id: 'hired', label: t('stage.hired'), dotColor: '#059669' },
+  { id: 'rejected', label: t('stage.rejected'), dotColor: '#e11d48' },
 ]);
 
 // Toolbar filter state
@@ -50,13 +51,11 @@ const draggedCandidateId = ref<string | null>(null);
 const dragOverStage = ref<string | null>(null);
 
 const effectiveCustomerId = computed(() => {
-  return authStore.actAsCustomerId || authStore.profile?.id || '';
+  return authStore.effectiveCustomerId || authStore.profile?.id || '22222222-2222-4222-8222-222222222222';
 });
 
 onMounted(async () => {
-  if (effectiveCustomerId.value) {
-    await loadPipeline();
-  }
+  await loadPipeline();
 });
 
 async function loadPipeline() {

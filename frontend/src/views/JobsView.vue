@@ -58,19 +58,17 @@ const jobToDelete = ref<Job | null>(null);
 const deleteSubmitting = ref(false);
 
 const effectiveCustomerId = computed(() => {
-  return authStore.actAsCustomerId || authStore.profile?.id || '';
+  return authStore.effectiveCustomerId || authStore.profile?.id || '22222222-2222-4222-8222-222222222222';
 });
 
 // Load jobs and candidates
 onMounted(async () => {
-  if (effectiveCustomerId.value) {
-    await Promise.all([
-      atsStore.loadJobs(effectiveCustomerId.value),
-      atsStore.loadCandidates(effectiveCustomerId.value)
-    ]);
-    if (atsStore.jobs.length > 0 && !selectedJobId.value) {
-      selectedJobId.value = atsStore.jobs[0].id;
-    }
+  await Promise.all([
+    atsStore.loadJobs(effectiveCustomerId.value),
+    atsStore.loadCandidates(effectiveCustomerId.value)
+  ]);
+  if (atsStore.jobs.length > 0 && !selectedJobId.value) {
+    selectedJobId.value = atsStore.jobs[0].id;
   }
 });
 

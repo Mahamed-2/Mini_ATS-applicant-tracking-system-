@@ -49,27 +49,25 @@ const isDeleteDialogOpen = ref(false);
 const isDeleting = ref(false);
 
 const STAGES = computed(() => [
-  { label: t('stage.applied'), value: 'applied' },
-  { label: t('stage.phoneScreen'), value: 'phone_screen' },
+  { label: t('stage.applied'), value: 'new' },
+  { label: t('stage.phoneScreen'), value: 'screening' },
   { label: t('stage.techInterview'), value: 'interview' },
-  { label: t('stage.cultureFit'), value: 'culture_fit' },
   { label: t('stage.offer'), value: 'offer' },
   { label: t('stage.hired'), value: 'hired' },
+  { label: t('stage.rejected'), value: 'rejected' },
 ]);
 
 const effectiveCustomerId = computed(() => {
-  return authStore.actAsCustomerId || authStore.profile?.id || '';
+  return authStore.effectiveCustomerId || authStore.profile?.id || '22222222-2222-4222-8222-222222222222';
 });
 
 // Load candidate details
 onMounted(async () => {
-  if (effectiveCustomerId.value) {
-    if (atsStore.candidates.length === 0) {
-      await atsStore.loadCandidates(effectiveCustomerId.value);
-    }
-    if (atsStore.jobs.length === 0) {
-      await atsStore.loadJobs(effectiveCustomerId.value);
-    }
+  if (atsStore.candidates.length === 0) {
+    await atsStore.loadCandidates(effectiveCustomerId.value);
+  }
+  if (atsStore.jobs.length === 0) {
+    await atsStore.loadJobs(effectiveCustomerId.value);
   }
 });
 

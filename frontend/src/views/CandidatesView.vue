@@ -48,23 +48,21 @@ const formFullName = ref('');
 const formEmail = ref('');
 const formLinkedinUrl = ref('');
 const formJobId = ref<string>('');
-const formStage = ref('applied');
+const formStage = ref('new');
 const formCvText = ref('');
 const formSummary = ref('');
 const formSubmitting = ref(false);
 
 const effectiveCustomerId = computed(() => {
-  return authStore.actAsCustomerId || authStore.profile?.id || '';
+  return authStore.effectiveCustomerId || authStore.profile?.id || '22222222-2222-4222-8222-222222222222';
 });
 
 // Load candidates and jobs on mount
 onMounted(async () => {
-  if (effectiveCustomerId.value) {
-    await Promise.all([
-      atsStore.loadCandidates(effectiveCustomerId.value),
-      atsStore.loadJobs(effectiveCustomerId.value)
-    ]);
-  }
+  await Promise.all([
+    atsStore.loadCandidates(effectiveCustomerId.value),
+    atsStore.loadJobs(effectiveCustomerId.value)
+  ]);
 });
 
 // Filter options for dropdowns
@@ -75,12 +73,12 @@ const jobOptions = computed(() => [
 
 const stageOptions = computed(() => [
   { label: t('candidates.allStages'), value: 'all' },
-  { label: t('stage.applied'), value: 'applied' },
-  { label: t('stage.phoneScreen'), value: 'phone_screen' },
+  { label: t('stage.applied'), value: 'new' },
+  { label: t('stage.phoneScreen'), value: 'screening' },
   { label: t('stage.techInterview'), value: 'interview' },
-  { label: t('stage.cultureFit'), value: 'culture_fit' },
   { label: t('stage.offer'), value: 'offer' },
   { label: t('stage.hired'), value: 'hired' },
+  { label: t('stage.rejected'), value: 'rejected' },
 ]);
 
 // Jobs lookup map

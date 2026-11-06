@@ -31,9 +31,9 @@ const { t } = useI18n();
 const isUserMenuOpen = ref(false);
 const searchQuery = ref('');
 
-const displayName = computed(() => authStore.profile?.displayName || 'Seed Admin');
-const email = computed(() => authStore.profile?.email || 'admin@nordic-recruit.demo');
-const role = computed(() => authStore.profile?.role || 'admin');
+const displayName = computed(() => authStore.profile?.displayName || (authStore.isAdmin ? 'Seed Admin' : 'Demo Customer'));
+const email = computed(() => authStore.profile?.email || (authStore.isAdmin ? 'admin@nordic-recruit.demo' : 'recruiter@nordic-tech.demo'));
+const role = computed(() => authStore.profile?.role || (authStore.isAdmin ? 'admin' : 'customer'));
 
 function onSearchSubmit(query: string) {
   if (query.trim()) {

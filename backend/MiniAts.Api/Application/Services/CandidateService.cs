@@ -144,18 +144,18 @@ public class CandidateService : ICandidateService
         await _candidates.DeleteAsync(id, effectiveId, ct);
     }
 
-    // Parse a stage string into the enum; throws if unrecognized.
+    // Parse a stage string into the enum; handles common synonyms and throws if unrecognized.
     private static CandidateStage ParseStage(string stage)
     {
-        return stage.ToLowerInvariant() switch
+        return stage.ToLowerInvariant().Replace("_", "").Replace(" ", "").Trim() switch
         {
-            "new"        => CandidateStage.New,
-            "screening"  => CandidateStage.Screening,
-            "interview"  => CandidateStage.Interview,
-            "offer"      => CandidateStage.Offer,
-            "hired"      => CandidateStage.Hired,
-            "rejected"   => CandidateStage.Rejected,
-            _            => throw new ArgumentException($"Unknown stage '{stage}'.")
+            "new" or "applied"                             => CandidateStage.New,
+            "screening" or "phonescreen"                   => CandidateStage.Screening,
+            "interview" or "techinterview" or "culturefit" => CandidateStage.Interview,
+            "offer"                                        => CandidateStage.Offer,
+            "hired"                                        => CandidateStage.Hired,
+            "rejected"                                     => CandidateStage.Rejected,
+            _                                              => throw new ArgumentException($"Unknown stage '{stage}'.")
         };
     }
 

@@ -99,12 +99,18 @@ export const useAuthStore = defineStore('auth', () => {
 
     setApiAuthToken(accessToken)
 
-    profile.value = {
+    const initialProfile: Profile = {
       id: userId,
       email: email,
       role: isAdminUser ? 'admin' : 'customer',
       displayName: isAdminUser ? 'Seed Admin' : 'Demo Customer',
       companyName: isAdminUser ? 'Nordic Recruit' : 'Nordic Tech AB'
+    }
+    profile.value = initialProfile
+    try {
+      localStorage.setItem('mini_ats_demo_profile', JSON.stringify(initialProfile))
+    } catch {
+      // ignore
     }
 
     // Trigger full backend profile load in background without blocking navigation
@@ -115,6 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function signOut() {
     try {
       localStorage.removeItem('mini_ats_demo_session')
+      localStorage.removeItem('mini_ats_demo_profile')
     } catch {
       // ignore
     }
@@ -143,14 +150,22 @@ export const useAuthStore = defineStore('auth', () => {
     const start = performance.now()
     try {
       // GET /api/account/me – returns id, email, role, displayName, companyName.
-      profile.value = await apiFetch<Profile>('/api/account/me')
+      const loaded = await apiFetch<Profile>('/api/account/me')
+      profile.value = loaded
       lastApiLatencyMs.value = Math.max(1, Math.round(performance.now() - start))
       lastApiStatus.value = '200 OK'
+      try {
+        localStorage.setItem('mini_ats_demo_profile', JSON.stringify(loaded))
+      } catch {
+        // ignore
+      }
     } catch {
       lastApiLatencyMs.value = Math.max(1, Math.round(performance.now() - start))
       lastApiStatus.value = '401 Unauthorized'
-      // If profile load fails (e.g. account not in profiles table), sign out.
-      await signOut()
+      // Only sign out on failure if not operating in demo fallback mode
+      if (!profile.value?.email?.includes('demo')) {
+        await signOut()
+      }
     }
   }
 
@@ -164,12 +179,32 @@ export const useAuthStore = defineStore('auth', () => {
         if (mock?.access_token) {
           session.value = mock
           setApiAuthToken(mock.access_token)
+
+          const savedProfile = localStorage.getItem('mini_ats_demo_profile')
+          if (savedProfile) {
+            try {
+              profile.value = JSON.parse(savedProfile)
+            } catch {
+              // ignore
+            }
+          } else {
+            const isAdm = (mock?.user?.email || '').toLowerCase().includes('admin')
+            profile.value = {
+              id: isAdm ? '11111111-1111-4111-8111-111111111111' : '22222222-2222-4222-8222-222222222222',
+              email: mock?.user?.email || (isAdm ? 'admin@nordic-recruit.demo' : 'recruiter@nordic-tech.demo'),
+              role: isAdm ? 'admin' : 'customer',
+              displayName: isAdm ? 'Seed Admin' : 'Demo Customer',
+              companyName: isAdm ? 'Nordic Recruit' : 'Nordic Tech AB'
+            }
+          }
+
           await loadProfile()
           return
         }
       }
     } catch {
       localStorage.removeItem('mini_ats_demo_session')
+      localStorage.removeItem('mini_ats_demo_profile')
     }
 
     // 2. Check remote Supabase only if valid non-defunct URL is configured
@@ -212,12 +247,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /** Return the effective customer id for API calls.
-   *  Admin uses actAsCustomerId if set; customer always uses own id. */
+   *  Admin uses actAsCustomerId if set; customer always uses own id or canonical demo id. */
   const effectiveCustomerId = computed<string>(() => {
-    if (profile.value?.role === 'admin' && actAsCustomerId.value) {
-      return actAsCustomerId.value
+    if (profile.value?.role === 'admin') {
+      return actAsCustomerId.value || '22222222-2222-4222-8222-222222222222'
     }
-    return profile.value?.id ?? ''
+    return profile.value?.id || '22222222-2222-4222-8222-222222222222'
   })
 
   return {
